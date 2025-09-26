@@ -1,0 +1,95 @@
+services:
+  # Frontend - Static Site
+  - type: web
+    name: toptuna-frontend
+    env: static
+    buildCommand: cd frontend && npm ci && npm run build
+    staticPublishPath: frontend/dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+  # Gateway - Main API Entry Point
+  - type: web
+    name: toptuna-gateway
+    env: java
+    buildCommand: mvn -q -DskipTests package
+    startCommand: java -jar gateway/target/*.jar
+    envVars:
+      - key: SERVER_PORT
+        value: 8080
+      - key: AUTH_URL
+        value: https://toptuna-auth.onrender.com
+      - key: CATALOG_URL
+        value: https://toptuna-catalog.onrender.com
+      - key: ORDERS_URL
+        value: https://toptuna-orders.onrender.com
+      - key: LOGISTICS_URL
+        value: https://toptuna-logistics.onrender.com
+      - key: CRM_URL
+        value: https://toptuna-crm.onrender.com
+      - key: EXPORT_URL
+        value: https://toptuna-export.onrender.com
+      - key: GATEWAY_ALLOWED_ORIGINS
+        value: https://toptuna-frontend.onrender.com
+
+  # Auth Service
+  - type: web
+    name: toptuna-auth
+    env: java
+    buildCommand: mvn -q -DskipTests package
+    startCommand: java -jar auth-service/target/*.jar
+    envVars:
+      - key: SERVER_PORT
+        value: 8081
+
+  # Catalog Service
+  - type: web
+    name: toptuna-catalog
+    env: java
+    buildCommand: mvn -q -DskipTests package
+    startCommand: java -jar catalog-service/target/*.jar
+    envVars:
+      - key: SERVER_PORT
+        value: 8082
+
+  # Order Service
+  - type: web
+    name: toptuna-orders
+    env: java
+    buildCommand: mvn -q -DskipTests package
+    startCommand: java -jar order-service/target/*.jar
+    envVars:
+      - key: SERVER_PORT
+        value: 8083
+
+  # Logistics Service
+  - type: web
+    name: toptuna-logistics
+    env: java
+    buildCommand: mvn -q -DskipTests package
+    startCommand: java -jar logistics-service/target/*.jar
+    envVars:
+      - key: SERVER_PORT
+        value: 8084
+
+  # CRM Service
+  - type: web
+    name: toptuna-crm
+    env: java
+    buildCommand: mvn -q -DskipTests package
+    startCommand: java -jar crm-service/target/*.jar
+    envVars:
+      - key: SERVER_PORT
+        value: 8085
+
+  # Export Service
+  - type: web
+    name: toptuna-export
+    env: java
+    buildCommand: mvn -q -DskipTests package
+    startCommand: java -jar export-service/target/*.jar
+    envVars:
+      - key: SERVER_PORT
+        value: 8086

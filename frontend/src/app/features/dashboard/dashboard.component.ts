@@ -1,0 +1,414 @@
+import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { TranslateModule } from '@ngx-translate/core';
+import { NgFor, NgIf } from '@angular/common';
+import { API_BASE } from '../../core/api.config';
+
+interface ServiceInfo {
+  name: string;
+  icon: string;
+  description: string;
+  healthy: boolean;
+  loading: boolean;
+  data: any;
+  stats: { label: string; value: string | number }[];
+}
+
+@Component({
+  standalone: true,
+  selector: 'app-dashboard',
+  template: `
+  <div class="fade-in">
+    <h1 class="page-title">{{ 'dashboard.title' | translate }}</h1>
+    <p class="page-subtitle">{{ 'dashboard.subtitle' | translate }}</p>
+
+    <div class="services-grid">
+      <!-- Auth Service -->
+      <div class="service-card" [class.healthy]="services.auth.healthy" (click)="testService('auth')">
+        <div class="service-header">
+          <div class="service-icon" style="background: #dbeafe; color: #1e40af;">🔐</div>
+          <div style="flex: 1;">
+            <h3 class="service-title">{{ 'services.auth.title' | translate }}</h3>
+            <div class="service-status" [class]="services.auth.healthy ? 'status-healthy' : 'status-down'">
+              <span *ngIf="services.auth.loading" class="loading"></span>
+              {{ services.auth.healthy ? ('status.healthy' | translate) : ('status.down' | translate) }}
+            </div>
+          </div>
+        </div>
+        <p class="service-description">{{ 'services.auth.description' | translate }}</p>
+        <div class="service-stats" *ngIf="services.auth.data">
+          <div class="stat">
+            <div class="stat-value">{{services.auth.data.length || 0}}</div>
+            <div class="stat-label">{{ 'stats.users' | translate }}</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">4</div>
+            <div class="stat-label">{{ 'stats.roles' | translate }}</div>
+          </div>
+        </div>
+        <div class="service-actions">
+          <button class="btn btn-primary btn-sm" (click)="testLogin(); $event.stopPropagation()">
+            {{ 'actions.test_login' | translate }}
+          </button>
+          <button class="btn btn-secondary btn-sm" (click)="viewData('auth'); $event.stopPropagation()">
+            {{ 'actions.view_data' | translate }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Catalog Service -->
+      <div class="service-card" [class.healthy]="services.catalog.healthy" (click)="testService('catalog')">
+        <div class="service-header">
+          <div class="service-icon" style="background: #dcfce7; color: #166534;">🐟</div>
+          <div style="flex: 1;">
+            <h3 class="service-title">{{ 'services.catalog.title' | translate }}</h3>
+            <div class="service-status" [class]="services.catalog.healthy ? 'status-healthy' : 'status-down'">
+              <span *ngIf="services.catalog.loading" class="loading"></span>
+              {{ services.catalog.healthy ? ('status.healthy' | translate) : ('status.down' | translate) }}
+            </div>
+          </div>
+        </div>
+        <p class="service-description">{{ 'services.catalog.description' | translate }}</p>
+        <div class="service-stats" *ngIf="services.catalog.data">
+          <div class="stat">
+            <div class="stat-value">{{services.catalog.data.length || 0}}</div>
+            <div class="stat-label">{{ 'stats.products' | translate }}</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">8</div>
+            <div class="stat-label">{{ 'stats.categories' | translate }}</div>
+          </div>
+        </div>
+        <div class="service-actions">
+          <button class="btn btn-primary btn-sm" (click)="searchProducts(); $event.stopPropagation()">
+            {{ 'actions.search_products' | translate }}
+          </button>
+          <button class="btn btn-secondary btn-sm" (click)="viewData('catalog'); $event.stopPropagation()">
+            {{ 'actions.view_data' | translate }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Order Service -->
+      <div class="service-card" [class.healthy]="services.orders.healthy" (click)="testService('orders')">
+        <div class="service-header">
+          <div class="service-icon" style="background: #fef3c7; color: #d97706;">📦</div>
+          <div style="flex: 1;">
+            <h3 class="service-title">{{ 'services.orders.title' | translate }}</h3>
+            <div class="service-status" [class]="services.orders.healthy ? 'status-healthy' : 'status-down'">
+              <span *ngIf="services.orders.loading" class="loading"></span>
+              {{ services.orders.healthy ? ('status.healthy' | translate) : ('status.down' | translate) }}
+            </div>
+          </div>
+        </div>
+        <p class="service-description">{{ 'services.orders.description' | translate }}</p>
+        <div class="service-stats" *ngIf="services.orders.data">
+          <div class="stat">
+            <div class="stat-value">{{services.orders.data.length || 0}}</div>
+            <div class="stat-label">{{ 'stats.orders' | translate }}</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">{{getTotalOrderValue()}}€</div>
+            <div class="stat-label">{{ 'stats.value' | translate }}</div>
+          </div>
+        </div>
+        <div class="service-actions">
+          <button class="btn btn-primary btn-sm" (click)="getRecentOrders(); $event.stopPropagation()">
+            {{ 'actions.recent_orders' | translate }}
+          </button>
+          <button class="btn btn-secondary btn-sm" (click)="viewData('orders'); $event.stopPropagation()">
+            {{ 'actions.view_data' | translate }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Logistics Service -->
+      <div class="service-card" [class.healthy]="services.logistics.healthy" (click)="testService('logistics')">
+        <div class="service-header">
+          <div class="service-icon" style="background: #e0e7ff; color: #4338ca;">🚚</div>
+          <div style="flex: 1;">
+            <h3 class="service-title">{{ 'services.logistics.title' | translate }}</h3>
+            <div class="service-status" [class]="services.logistics.healthy ? 'status-healthy' : 'status-down'">
+              <span *ngIf="services.logistics.loading" class="loading"></span>
+              {{ services.logistics.healthy ? ('status.healthy' | translate) : ('status.down' | translate) }}
+            </div>
+          </div>
+        </div>
+        <p class="service-description">{{ 'services.logistics.description' | translate }}</p>
+        <div class="service-stats" *ngIf="services.logistics.data">
+          <div class="stat">
+            <div class="stat-value">{{services.logistics.data.length || 0}}</div>
+            <div class="stat-label">{{ 'stats.routes' | translate }}</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">{{getTotalStops()}}</div>
+            <div class="stat-label">{{ 'stats.stops' | translate }}</div>
+          </div>
+        </div>
+        <div class="service-actions">
+          <button class="btn btn-primary btn-sm" (click)="getTodayRoutes(); $event.stopPropagation()">
+            {{ 'actions.today_routes' | translate }}
+          </button>
+          <button class="btn btn-secondary btn-sm" (click)="viewData('logistics'); $event.stopPropagation()">
+            {{ 'actions.view_data' | translate }}
+          </button>
+        </div>
+      </div>
+
+      <!-- CRM Service -->
+      <div class="service-card" [class.healthy]="services.crm.healthy" (click)="testService('crm')">
+        <div class="service-header">
+          <div class="service-icon" style="background: #fce7f3; color: #be185d;">👥</div>
+          <div style="flex: 1;">
+            <h3 class="service-title">{{ 'services.crm.title' | translate }}</h3>
+            <div class="service-status" [class]="services.crm.healthy ? 'status-healthy' : 'status-down'">
+              <span *ngIf="services.crm.loading" class="loading"></span>
+              {{ services.crm.healthy ? ('status.healthy' | translate) : ('status.down' | translate) }}
+            </div>
+          </div>
+        </div>
+        <p class="service-description">{{ 'services.crm.description' | translate }}</p>
+        <div class="service-stats" *ngIf="services.crm.data">
+          <div class="stat">
+            <div class="stat-value">{{getTotalCustomers()}}</div>
+            <div class="stat-label">{{ 'stats.customers' | translate }}</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">{{Object.keys(services.crm.data || {}).length}}</div>
+            <div class="stat-label">{{ 'stats.segments' | translate }}</div>
+          </div>
+        </div>
+        <div class="service-actions">
+          <button class="btn btn-primary btn-sm" (click)="getCustomerSegments(); $event.stopPropagation()">
+            {{ 'actions.customer_segments' | translate }}
+          </button>
+          <button class="btn btn-secondary btn-sm" (click)="viewData('crm'); $event.stopPropagation()">
+            {{ 'actions.view_data' | translate }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Export Service -->
+      <div class="service-card" [class.healthy]="services.export.healthy" (click)="testService('export')">
+        <div class="service-header">
+          <div class="service-icon" style="background: #ecfdf5; color: #059669;">📊</div>
+          <div style="flex: 1;">
+            <h3 class="service-title">{{ 'services.export.title' | translate }}</h3>
+            <div class="service-status" [class]="services.export.healthy ? 'status-healthy' : 'status-down'">
+              <span *ngIf="services.export.loading" class="loading"></span>
+              {{ services.export.healthy ? ('status.healthy' | translate) : ('status.down' | translate) }}
+            </div>
+          </div>
+        </div>
+        <p class="service-description">{{ 'services.export.description' | translate }}</p>
+        <div class="service-stats" *ngIf="services.export.data">
+          <div class="stat">
+            <div class="stat-value">{{services.export.data.tagesumsatz || 0}}€</div>
+            <div class="stat-label">{{ 'stats.daily_revenue' | translate }}</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">{{services.export.data.kundenGesamt || 0}}</div>
+            <div class="stat-label">{{ 'stats.total_customers' | translate }}</div>
+          </div>
+        </div>
+        <div class="service-actions">
+          <button class="btn btn-primary btn-sm" (click)="getAdminDashboard(); $event.stopPropagation()">
+            {{ 'actions.admin_dashboard' | translate }}
+          </button>
+          <button class="btn btn-secondary btn-sm" (click)="viewData('export'); $event.stopPropagation()">
+            {{ 'actions.view_data' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Demo Data Display -->
+    <div class="demo-section" *ngIf="selectedService">
+      <h2 class="demo-title">{{selectedService}} {{ 'demo.data_title' | translate }}</h2>
+      <div class="demo-grid">
+        <div class="demo-card">
+          <h4>{{ 'demo.raw_data' | translate }}</h4>
+          <pre style="background: #f8fafc; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; font-size: 0.8rem;">{{selectedData | json}}</pre>
+        </div>
+        <div class="demo-card" *ngIf="demoInstructions[selectedService]">
+          <h4>{{ 'demo.test_instructions' | translate }}</h4>
+          <ul class="demo-list">
+            <li *ngFor="let instruction of demoInstructions[selectedService]">{{instruction}}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  `,
+  imports: [TranslateModule, NgFor, NgIf]
+})
+export class DashboardComponent implements OnInit {
+  services: { [key: string]: ServiceInfo } = {
+    auth: { name: 'Auth', icon: '🔐', description: '', healthy: false, loading: false, data: null, stats: [] },
+    catalog: { name: 'Catalog', icon: '🐟', description: '', healthy: false, loading: false, data: null, stats: [] },
+    orders: { name: 'Orders', icon: '📦', description: '', healthy: false, loading: false, data: null, stats: [] },
+    logistics: { name: 'Logistics', icon: '🚚', description: '', healthy: false, loading: false, data: null, stats: [] },
+    crm: { name: 'CRM', icon: '👥', description: '', healthy: false, loading: false, data: null, stats: [] },
+    export: { name: 'Export', icon: '📊', description: '', healthy: false, loading: false, data: null, stats: [] }
+  };
+
+  selectedService = '';
+  selectedData: any = null;
+
+  demoInstructions: { [key: string]: string[] } = {
+    auth: [
+      'Test admin login: admin / admin',
+      'Test restaurant login: saigon_sushi / test',
+      'View all demo users',
+      'Check role-based access'
+    ],
+    catalog: [
+      'Browse 30 fish products',
+      'Search for "Lachs" (Salmon)',
+      'Filter by category',
+      'View Vietnamese product names'
+    ],
+    orders: [
+      'View recent orders',
+      'Check customer order history',
+      'See order totals and status',
+      'Vietnamese restaurant orders'
+    ],
+    logistics: [
+      'View today\'s delivery routes',
+      'Check HACCP temperature tracking',
+      'See driver assignments',
+      'Monitor delivery status'
+    ],
+    crm: [
+      'View customer segments',
+      'Check active campaigns',
+      'See customer loyalty data',
+      'Vietnamese restaurant profiles'
+    ],
+    export: [
+      'View admin dashboard KPIs',
+      'Check daily revenue',
+      'DATEV export functionality',
+      'Business analytics'
+    ]
+  };
+
+  constructor(private http: HttpClient) {}
+
+  ngOnInit() {
+    this.checkAllServices();
+  }
+
+  checkAllServices() {
+    Object.keys(this.services).forEach(service => {
+      this.services[service].loading = true;
+      this.http.get(`${API_BASE}/${service}/health`, { responseType: 'text' })
+        .subscribe({
+          next: () => {
+            this.services[service].healthy = true;
+            this.services[service].loading = false;
+            this.loadServiceData(service);
+          },
+          error: () => {
+            this.services[service].healthy = false;
+            this.services[service].loading = false;
+          }
+        });
+    });
+  }
+
+  loadServiceData(service: string) {
+    const endpoints: { [key: string]: string } = {
+      auth: '/auth/users',
+      catalog: '/catalog/products',
+      orders: '/orders/recent',
+      logistics: '/logistics/routes/today',
+      crm: '/crm/customers/segments',
+      export: '/export/admin/dashboard'
+    };
+
+    if (endpoints[service]) {
+      this.http.get(`${API_BASE}${endpoints[service]}`).subscribe({
+        next: (data) => this.services[service].data = data,
+        error: () => console.log(`Failed to load ${service} data`)
+      });
+    }
+  }
+
+  testService(service: string) {
+    this.selectedService = service;
+    this.selectedData = this.services[service].data;
+  }
+
+  viewData(service: string) {
+    this.selectedService = service;
+    this.selectedData = this.services[service].data;
+  }
+
+  // Service-specific test methods
+  testLogin() {
+    this.http.post(`${API_BASE}/auth/login`, { username: 'admin', password: 'admin' })
+      .subscribe(data => {
+        this.selectedService = 'auth';
+        this.selectedData = data;
+      });
+  }
+
+  searchProducts() {
+    this.http.get(`${API_BASE}/catalog/products?q=Lachs`)
+      .subscribe(data => {
+        this.selectedService = 'catalog';
+        this.selectedData = data;
+      });
+  }
+
+  getRecentOrders() {
+    this.http.get(`${API_BASE}/orders/recent`)
+      .subscribe(data => {
+        this.selectedService = 'orders';
+        this.selectedData = data;
+      });
+  }
+
+  getTodayRoutes() {
+    this.http.get(`${API_BASE}/logistics/routes/today`)
+      .subscribe(data => {
+        this.selectedService = 'logistics';
+        this.selectedData = data;
+      });
+  }
+
+  getCustomerSegments() {
+    this.http.get(`${API_BASE}/crm/customers/segments`)
+      .subscribe(data => {
+        this.selectedService = 'crm';
+        this.selectedData = data;
+      });
+  }
+
+  getAdminDashboard() {
+    this.http.get(`${API_BASE}/export/admin/dashboard`)
+      .subscribe(data => {
+        this.selectedService = 'export';
+        this.selectedData = data;
+      });
+  }
+
+  // Helper methods
+  getTotalOrderValue(): number {
+    const orders = this.services.orders.data;
+    return orders ? orders.reduce((sum: number, order: any) => sum + (order.totalAmount || 0), 0) : 0;
+  }
+
+  getTotalStops(): number {
+    const routes = this.services.logistics.data;
+    return routes ? routes.reduce((sum: number, route: any) => sum + (route.stops?.length || 0), 0) : 0;
+  }
+
+  getTotalCustomers(): number {
+    const segments = this.services.crm.data;
+    if (!segments) return 0;
+    return Object.values(segments).reduce((sum: number, customers: any) => sum + (customers?.length || 0), 0);
+  }
+}

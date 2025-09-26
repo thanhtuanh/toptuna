@@ -1,0 +1,2 @@
+server.port: ${SERVER_PORT:8082}
+toptuna.catalog.seedFile: ${SEED_FILE:classpath:seeds/toptuna_demo_products.csv}

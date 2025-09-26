@@ -1,0 +1,40 @@
+version: "3.9"
+services:
+  frontend:
+    build: ../frontend
+    ports: ["4200:80"]
+    depends_on: [gateway]
+
+  gateway:
+    build: ../gateway
+    ports: ["8080:8080"]
+    environment:
+      - GATEWAY_ALLOWED_ORIGINS=http://localhost:4200
+      - AUTH_URL=http://auth:8081
+      - CATALOG_URL=http://catalog:8082
+      - ORDERS_URL=http://orders:8083
+      - LOGISTICS_URL=http://logistics:8084
+      - CRM_URL=http://crm:8085
+      - EXPORT_URL=http://export:8086
+    depends_on: [auth, catalog, orders, logistics, crm, export]
+
+  auth:
+    build: ../auth-service
+    environment: [ "SERVER_PORT=8081" ]
+  catalog:
+    build: ../catalog-service
+    environment:
+      - SERVER_PORT=8082
+      - SEED_FILE=/app/resources/seeds/toptuna_demo_products.csv
+  orders:
+    build: ../order-service
+    environment: [ "SERVER_PORT=8083" ]
+  logistics:
+    build: ../logistics-service
+    environment: [ "SERVER_PORT=8084" ]
+  crm:
+    build: ../crm-service
+    environment: [ "SERVER_PORT=8085" ]
+  export:
+    build: ../export-service
+    environment: [ "SERVER_PORT=8086" ]

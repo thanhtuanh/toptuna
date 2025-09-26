@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "projects": {
+    "toptuna-frontend": {
+      "projectType": "application",
+      "root": "",
+      "sourceRoot": "src",
+      "architect": {
+        "build": {
+          "options": {
+            "outputPath": "dist",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "assets": ["src/assets"],
+            "styles": ["src/styles.css"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true
+            }
+          }
+        },
+        "serve": { "options": { "browserTarget": "toptuna-frontend:build" } }
+      }
+    }
+  },
+  "defaultProject": "toptuna-frontend"
+}

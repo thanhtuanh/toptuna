@@ -1,0 +1,94 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "catalog": "Katalog",
+    "admin": "Admin",
+    "logout": "Abmelden"
+  },
+  "dashboard": {
+    "title": "TopTuna B2B Portal",
+    "subtitle": "Fischgroßhandel für vietnamesische Restaurants - Alle Services im Überblick"
+  },
+  "services": {
+    "auth": {
+      "title": "Authentifizierung",
+      "description": "JWT-basierte Anmeldung mit Rollen für Admin, Disponenten, Fahrer und Kunden"
+    },
+    "catalog": {
+      "title": "Produktkatalog",
+      "description": "30 Premium-Fischprodukte mit deutschen und vietnamesischen Namen"
+    },
+    "orders": {
+      "title": "Bestellmanagement",
+      "description": "Bestellungen vietnamesischer Restaurants mit Lieferfenstern"
+    },
+    "logistics": {
+      "title": "Logistik & HACCP",
+      "description": "Tourenplanung mit Kühlkette-Tracking und Temperaturüberwachung"
+    },
+    "crm": {
+      "title": "Kundenmanagement",
+      "description": "Kundensegmente für Sushi, Chinesisch und Thai-Restaurants"
+    },
+    "export": {
+      "title": "Export & Reporting",
+      "description": "DATEV-Export und Admin-Dashboard für Geschäftsanalysen"
+    }
+  },
+  "status": {
+    "healthy": "Aktiv",
+    "down": "Offline"
+  },
+  "stats": {
+    "users": "Benutzer",
+    "roles": "Rollen",
+    "products": "Produkte",
+    "categories": "Kategorien",
+    "orders": "Bestellungen",
+    "value": "Wert",
+    "routes": "Touren",
+    "stops": "Stopps",
+    "customers": "Kunden",
+    "segments": "Segmente",
+    "daily_revenue": "Tagesumsatz",
+    "total_customers": "Kunden gesamt"
+  },
+  "actions": {
+    "test_login": "Login testen",
+    "view_data": "Daten anzeigen",
+    "search_products": "Produkte suchen",
+    "recent_orders": "Aktuelle Bestellungen",
+    "today_routes": "Heutige Touren",
+    "customer_segments": "Kundensegmente",
+    "admin_dashboard": "Admin Dashboard"
+  },
+  "demo": {
+    "data_title": "Demo-Daten",
+    "raw_data": "Rohdaten",
+    "test_instructions": "Test-Anweisungen"
+  },
+  "login": {
+    "title": "TopTuna Anmeldung",
+    "username": "Benutzername",
+    "password": "Passwort",
+    "login_button": "Anmelden",
+    "demo_users": "Demo-Benutzer",
+    "admin_desc": "Administrator Dashboard",
+    "restaurant_desc": "Restaurantbesitzer",
+    "driver_desc": "Lieferfahrer"
+  },
+  "catalog": {
+    "title": "Fischkatalog",
+    "search_placeholder": "Produkte suchen...",
+    "category_all": "Alle Kategorien",
+    "price": "Preis",
+    "origin": "Herkunft",
+    "unit": "Einheit"
+  },
+  "ui": {
+    "loading": "Lädt...",
+    "error": "Fehler",
+    "ok": "OK",
+    "off": "Offline"
+  }
+}
