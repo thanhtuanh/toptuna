@@ -1,11 +1,17 @@
 {
+  "compileOnSave": false,
   "compilerOptions": {
-    "target": "ES2022",
-    "useDefineForClassFields": false,
-    "module": "ES2022",
-    "moduleResolution": "Bundler",
-    "strict": true,
+    "target": "ES2016",
+    "module": "ES2020",
+    "lib": ["ES2018", "DOM"],
+    "outDir": "./out-tsc",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
     "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": false,
     "types": []
   }
 }
