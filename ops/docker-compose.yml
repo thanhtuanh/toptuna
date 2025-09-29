@@ -1,14 +1,29 @@
-version: "3.9"
+# ops/docker-compose.yml
 services:
   frontend:
-    build: ../frontend
-    ports: ["4200:80"]
-    depends_on: [gateway]
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    image: ops-frontend:latest
+    ports:
+      - "4200:80"
+    depends_on:
+      - gateway
 
   gateway:
-    build: ../gateway
-    ports: ["8080:8080"]
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.maven
+      args:
+        SERVICE_DIR: gateway
+    image: ops-gateway:latest
+    env_file:
+      - ../.env  # Lädt .env aus dem Projekt-Root
+    ports:
+      - "8080:8080"
     environment:
+      - ENV=dev  # Setzt ENV auf "dev" für lokale Entwicklung
+      - SERVER_PORT=8080
       - GATEWAY_ALLOWED_ORIGINS=http://localhost:4200
       - AUTH_URL=http://auth:8081
       - CATALOG_URL=http://catalog:8082
@@ -16,25 +31,130 @@ services:
       - LOGISTICS_URL=http://logistics:8084
       - CRM_URL=http://crm:8085
       - EXPORT_URL=http://export:8086
-    depends_on: [auth, catalog, orders, logistics, crm, export]
+    depends_on:
+      - auth
+      - catalog
+      - orders
+      - logistics
+      - crm
+      - export
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-S", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
 
   auth:
-    build: ../auth-service
-    environment: [ "SERVER_PORT=8081" ]
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.maven
+      args:
+        SERVICE_DIR: auth-service
+    image: ops-auth:latest
+    environment:
+      - SERVER_PORT=8081
+    ports:
+      - "8081:8081"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-S", "http://localhost:8081/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+
   catalog:
-    build: ../catalog-service
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.maven
+      args:
+        SERVICE_DIR: catalog-service
+    image: ops-catalog:latest
     environment:
       - SERVER_PORT=8082
-      - SEED_FILE=/app/resources/seeds/toptuna_demo_products.csv
+      - SEED_FILE=classpath:seeds/toptuna_demo_products.csv
+      #- SEED_FILE=/app/resources/seeds/toptuna_demo_products.csv
+    ports:
+      - "8082:8082"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-S", "http://localhost:8082/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+
   orders:
-    build: ../order-service
-    environment: [ "SERVER_PORT=8083" ]
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.maven
+      args:
+        SERVICE_DIR: order-service
+    image: ops-orders:latest
+    environment:
+      - SERVER_PORT=8083
+    ports:
+      - "8083:8083"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-S", "http://localhost:8083/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+
   logistics:
-    build: ../logistics-service
-    environment: [ "SERVER_PORT=8084" ]
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.maven
+      args:
+        SERVICE_DIR: logistics-service
+    image: ops-logistics:latest
+    environment:
+      - SERVER_PORT=8084
+    ports:
+      - "8084:8084"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-S", "http://localhost:8084/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+
   crm:
-    build: ../crm-service
-    environment: [ "SERVER_PORT=8085" ]
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.maven
+      args:
+        SERVICE_DIR: crm-service
+    image: ops-crm:latest
+    environment:
+      - SERVER_PORT=8085
+    ports:
+      - "8085:8085"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-S", "http://localhost:8085/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+
   export:
-    build: ../export-service
-    environment: [ "SERVER_PORT=8086" ]
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.maven
+      args:
+        SERVICE_DIR: export-service
+    image: ops-export:latest
+    environment:
+      - SERVER_PORT=8086
+    ports:
+      - "8086:8086"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-S", "http://localhost:8086/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+
+networks:
+  default:
+    name: ops_toptuna_net

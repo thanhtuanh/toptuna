@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { HealthService } from '../../core/health.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { NgIf } from '@angular/common';
+import { Subscription } from 'rxjs';
 
 @Component({
   standalone: true,
@@ -39,20 +40,25 @@ import { NgIf } from '@angular/common';
              .tile.ok{border-color:#4caf50}`],
   imports: [TranslateModule, NgIf]
 })
-export class TilesComponent implements OnInit {
+export class TilesComponent implements OnInit, OnDestroy {
   authOk=false; catalogOk=false; ordersOk=false; 
   logisticsOk=false; crmOk=false; exportOk=false;
+  private subscription = new Subscription();
   
   constructor(private svc: HealthService, private router: Router, private t: TranslateService) {}
   
-  ngOnInit(){
-    this.svc.ping('auth').subscribe({ next: _=> this.authOk=true });
-    this.svc.ping('catalog').subscribe({ next: _=> this.catalogOk=true });
-    this.svc.ping('orders').subscribe({ next: _=> this.ordersOk=true });
-    this.svc.ping('logistics').subscribe({ next: _=> this.logisticsOk=true });
-    this.svc.ping('crm').subscribe({ next: _=> this.crmOk=true });
-    this.svc.ping('export').subscribe({ next: _=> this.exportOk=true });
+  ngOnInit() {
+    this.subscription.add(this.svc.ping('auth').subscribe({ next: _=> this.authOk=true }));
+    this.subscription.add(this.svc.ping('catalog').subscribe({ next: _=> this.catalogOk=true }));
+    this.subscription.add(this.svc.ping('orders').subscribe({ next: _=> this.ordersOk=true }));
+    this.subscription.add(this.svc.ping('logistics').subscribe({ next: _=> this.logisticsOk=true }));
+    this.subscription.add(this.svc.ping('crm').subscribe({ next: _=> this.crmOk=true }));
+    this.subscription.add(this.svc.ping('export').subscribe({ next: _=> this.exportOk=true }));
   }
   
-  open(path: string){ this.router.navigateByUrl('/'+path); }
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+  
+  open(path: string) { this.router.navigateByUrl('/'+path); }
 }

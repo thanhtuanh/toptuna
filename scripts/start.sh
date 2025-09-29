@@ -1,52 +1,27 @@
-#!/bin/bash
-# TopTuna B2B Portal - Start Script
+#!/usr/bin/env bash
+set -euo pipefail
 
+COMPOSE_FILE="ops/docker-compose.yml"
 echo "🐟 Starting TopTuna B2B Portal..."
 echo "================================="
 
-# Build all services
-echo "📦 Building all services..."
-mvn -q -DskipTests package
+# build backend jars locally first (recommended, speeds up Docker builds)
+echo "📦 Building Maven multi-module (local) -- skip tests"
+mvn -B -DskipTests package
 
-if [ $? -ne 0 ]; then
-    echo "❌ Build failed!"
-    exit 1
-fi
+echo "📦 Building images via docker compose (BuildKit recommended)"
+export DOCKER_BUILDKIT=1
 
-# Start Docker Compose
-echo "🚀 Starting Docker containers..."
-docker compose -f ops/docker-compose.yml up --build -d
+# Build all images (no cache recommended on first run)
+docker compose -f "$COMPOSE_FILE" build --progress=plain
 
-# Wait for services to start
-echo "⏳ Waiting for services to start..."
-sleep 30
+echo "🚀 Bringing up containers"
+docker compose -f "$COMPOSE_FILE" up -d
 
-# Check service health
-echo "🔍 Checking service health..."
-services=("auth" "catalog" "orders" "logistics" "crm" "export")
-all_healthy=true
+echo "⏳ Wait a bit for services to start..."
+sleep 5
 
-for service in "${services[@]}"; do
-    response=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/api/$service/health)
-    if [ "$response" = "200" ]; then
-        echo "✅ $service service: HEALTHY"
-    else
-        echo "❌ $service service: DOWN (HTTP $response)"
-        all_healthy=false
-    fi
-done
+echo "🔍 Checking gateway health (via container healthcheck)"
+docker compose -f "$COMPOSE_FILE" ps
 
-echo ""
-if [ "$all_healthy" = true ]; then
-    echo "🎉 All services are running!"
-    echo ""
-    echo "📋 Access Points:"
-    echo "- Frontend:    http://localhost:4200"
-    echo "- Gateway:     http://localhost:8080"
-    echo "- Admin Login: admin / admin"
-    echo ""
-    echo "🧪 Run API tests: ./scripts/test-api.sh"
-else
-    echo "⚠️  Some services are not healthy. Check logs with:"
-    echo "docker compose -f ops/docker-compose.yml logs"
-fi
+echo "➡️ View logs: docker compose -f $COMPOSE_FILE logs -f gateway"

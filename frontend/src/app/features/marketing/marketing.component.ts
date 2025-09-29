@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgFor, NgIf } from '@angular/common';
 import { API_BASE } from '../../core/api.config';
+import { Subscription } from 'rxjs';
 
 @Component({
   standalone: true,
@@ -52,16 +53,25 @@ import { API_BASE } from '../../core/api.config';
   `],
   imports: [TranslateModule, NgFor, NgIf]
 })
-export class MarketingComponent implements OnInit {
+export class MarketingComponent implements OnInit, OnDestroy {
   insights: any = {};
   recommendations: any[] = [];
+  private subscription = new Subscription();
 
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
-    this.http.get(`${API_BASE}/marketing/insights`).subscribe(data => this.insights = data);
-    this.http.get(`${API_BASE}/marketing/recommendations/customer/rest_001`)
-      .subscribe((data: any) => this.recommendations = data);
+    this.subscription.add(
+      this.http.get(`${API_BASE}/marketing/insights`).subscribe(data => this.insights = data)
+    );
+    this.subscription.add(
+      this.http.get(`${API_BASE}/marketing/recommendations/customer/rest_001`)
+        .subscribe((data: any) => this.recommendations = data)
+    );
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   getRegions() {

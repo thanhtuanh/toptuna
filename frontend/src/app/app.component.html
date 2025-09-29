@@ -1,23 +1,26 @@
-<header class="header" *ngIf="!isLoginPage()">
-  <a routerLink="/dashboard" class="logo">TopTuna B2B</a>
-  
-  <nav class="nav">
-    <a routerLink="/dashboard" routerLinkActive="active">{{ 'nav.dashboard' | translate }}</a>
-    <a routerLink="/catalog" routerLinkActive="active">{{ 'nav.catalog' | translate }}</a>
-    <a routerLink="/admin" routerLinkActive="active" *ngIf="isAdmin()">{{ 'nav.admin' | translate }}</a>
-  </nav>
-  
-  <div class="user-info">
-    <app-lang-switch></app-lang-switch>
-    <div class="user-badge" *ngIf="currentUser">
-      {{currentUser.name}} ({{currentUser.role}})
+<div>
+  <header class="header">
+    <a routerLink="/dashboard" class="logo">TopTuna B2B</a>
+    
+    <nav class="nav">
+      <a routerLink="/dashboard">{{ 'nav.dashboard' | translate }}</a>
+      <a routerLink="/catalog">{{ 'nav.catalog' | translate }}</a>
+      <a routerLink="/admin">{{ 'nav.admin' | translate }}</a>
+    </nav>
+    
+    <div class="user-info">
+      <select [value]="currentLang" (change)="switchLang($any($event.target).value)">
+        <option value="de">Deutsch</option>
+        <option value="en">English</option>
+        <option value="vi">Tiếng Việt</option>
+      </select>
+      <button class="btn btn-secondary btn-sm" (click)="logout()">
+        {{ 'nav.logout' | translate }}
+      </button>
     </div>
-    <button class="btn btn-secondary btn-sm" (click)="logout()">
-      {{ 'nav.logout' | translate }}
-    </button>
-  </div>
-</header>
+  </header>
 
-<main class="container">
-  <router-outlet></router-outlet>
-</main>
+  <main class="container">
+    <router-outlet></router-outlet>
+  </main>
+</div>

@@ -1,34 +1,35 @@
-server.port: 8080
+server:
+  port: ${SERVER_PORT:8080}
 
-spring.cloud.gateway.routes:
-  - id: auth
-    uri: ${AUTH_URL:http://auth:8081}
-    predicates: [ Path=/api/auth/** ]
-    filters:   [ StripPrefix=2 ]
-  - id: catalog
-    uri: ${CATALOG_URL:http://catalog:8082}
-    predicates: [ Path=/api/catalog/** ]
-    filters:   [ StripPrefix=2 ]
-  - id: orders
-    uri: ${ORDERS_URL:http://orders:8083}
-    predicates: [ Path=/api/orders/** ]
-    filters:   [ StripPrefix=2 ]
-  - id: logistics
-    uri: ${LOGISTICS_URL:http://logistics:8084}
-    predicates: [ Path=/api/logistics/** ]
-    filters:   [ StripPrefix=2 ]
-  - id: crm
-    uri: ${CRM_URL:http://crm:8085}
-    predicates: [ Path=/api/crm/** ]
-    filters:   [ StripPrefix=2 ]
-  - id: export
-    uri: ${EXPORT_URL:http://export:8086}
-    predicates: [ Path=/api/export/** ]
-    filters:   [ StripPrefix=2 ]
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: auth-service
+          uri: ${AUTH_URL:http://auth:8081}
+          predicates:
+            - Path=/api/auth/**
+        - id: catalog-service
+          uri: ${CATALOG_URL:http://catalog:8082}
+          predicates:
+            - Path=/api/catalog/**
+        - id: orders-service
+          uri: ${ORDERS_URL:http://orders:8083}
+          predicates:
+            - Path=/api/orders/**
+        - id: logistics-service
+          uri: ${LOGISTICS_URL:http://logistics:8084}
+          predicates:
+            - Path=/api/logistics/**
+        - id: crm-service
+          uri: ${CRM_URL:http://crm:8085}
+          predicates:
+            - Path=/api/crm/**
+        - id: export-service
+          uri: ${EXPORT_URL:http://export:8086}
+          predicates:
+            - Path=/api/export/**
 
-# Security-Header
-spring.cloud.gateway.default-filters:
-  - AddResponseHeader=X-Frame-Options, DENY
-  - AddResponseHeader=Referrer-Policy, no-referrer
-
-toptuna.cors.allowed-origins: ${GATEWAY_ALLOWED_ORIGINS:http://localhost:4200}
+toptuna:
+  cors:
+    allowed-origins: ${GATEWAY_ALLOWED_ORIGINS:http://localhost:4200}

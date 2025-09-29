@@ -1,24 +1,48 @@
+# TopTuna B2B Portal - Render.com Deployment
+# Fischgroßhandel für vietnamesische Restaurants
+
+databases:
+  - name: toptuna-db
+    databaseName: toptuna
+    user: toptuna_user
+    plan: free
+    postgresMajorVersion: 15
+    ipAllowList: []
+
 services:
-  # Frontend - Static Site
+  # Frontend - Angular 17 PWA (DE/VI/EN)
   - type: web
     name: toptuna-frontend
     env: static
-    buildCommand: cd frontend && npm ci && npm run build
-    staticPublishPath: frontend/dist
+    buildCommand: cd frontend && npm ci && npm run build:prod
+    staticPublishPath: frontend/dist/toptuna-frontend
     routes:
       - type: rewrite
         source: /*
         destination: /index.html
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: DENY
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
 
-  # Gateway - Main API Entry Point
+  # Gateway - Spring Cloud Gateway + Security
   - type: web
     name: toptuna-gateway
     env: java
-    buildCommand: mvn -q -DskipTests package
-    startCommand: java -jar gateway/target/*.jar
+    buildCommand: mvn -f gateway/pom.xml clean package -DskipTests -q
+    startCommand: java -Xmx512m -jar gateway/target/*.jar
     envVars:
       - key: SERVER_PORT
-        value: 8080
+        value: "10000"
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: DATABASE_URL
+        fromDatabase:
+          name: toptuna-db
+          property: connectionString
       - key: AUTH_URL
         value: https://toptuna-auth.onrender.com
       - key: CATALOG_URL
@@ -33,63 +57,110 @@ services:
         value: https://toptuna-export.onrender.com
       - key: GATEWAY_ALLOWED_ORIGINS
         value: https://toptuna-frontend.onrender.com
+      - key: JWT_SECRET
+        generateValue: true
+    healthCheckPath: /health
 
-  # Auth Service
+  # Auth Service - JWT + Rollen (Admin/Dispo/Fahrer/Kunde)
   - type: web
     name: toptuna-auth
     env: java
-    buildCommand: mvn -q -DskipTests package
-    startCommand: java -jar auth-service/target/*.jar
+    buildCommand: mvn -f auth-service/pom.xml clean package -DskipTests -q
+    startCommand: java -Xmx256m -jar auth-service/target/*.jar
     envVars:
       - key: SERVER_PORT
-        value: 8081
+        value: "10000"
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: DATABASE_URL
+        fromDatabase:
+          name: toptuna-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+    healthCheckPath: /health
 
-  # Catalog Service
+  # Catalog Service - Produktkatalog + Staffelpreise
   - type: web
     name: toptuna-catalog
     env: java
-    buildCommand: mvn -q -DskipTests package
-    startCommand: java -jar catalog-service/target/*.jar
+    buildCommand: mvn -f catalog-service/pom.xml clean package -DskipTests -q
+    startCommand: java -Xmx256m -jar catalog-service/target/*.jar
     envVars:
       - key: SERVER_PORT
-        value: 8082
+        value: "10000"
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: DATABASE_URL
+        fromDatabase:
+          name: toptuna-db
+          property: connectionString
+    healthCheckPath: /health
 
-  # Order Service
+  # Order Service - Warenkorb + Bestellmanagement
   - type: web
     name: toptuna-orders
     env: java
-    buildCommand: mvn -q -DskipTests package
-    startCommand: java -jar order-service/target/*.jar
+    buildCommand: mvn -f order-service/pom.xml clean package -DskipTests -q
+    startCommand: java -Xmx256m -jar order-service/target/*.jar
     envVars:
       - key: SERVER_PORT
-        value: 8083
+        value: "10000"
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: DATABASE_URL
+        fromDatabase:
+          name: toptuna-db
+          property: connectionString
+    healthCheckPath: /health
 
-  # Logistics Service
+  # Logistics Service - Tour-/Lieferplanung + HACCP
   - type: web
     name: toptuna-logistics
     env: java
-    buildCommand: mvn -q -DskipTests package
-    startCommand: java -jar logistics-service/target/*.jar
+    buildCommand: mvn -f logistics-service/pom.xml clean package -DskipTests -q
+    startCommand: java -Xmx256m -jar logistics-service/target/*.jar
     envVars:
       - key: SERVER_PORT
-        value: 8084
+        value: "10000"
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: DATABASE_URL
+        fromDatabase:
+          name: toptuna-db
+          property: connectionString
+    healthCheckPath: /health
 
-  # CRM Service
+  # CRM Service - Kundendaten + Segmente + Kampagnen
   - type: web
     name: toptuna-crm
     env: java
-    buildCommand: mvn -q -DskipTests package
-    startCommand: java -jar crm-service/target/*.jar
+    buildCommand: mvn -f crm-service/pom.xml clean package -DskipTests -q
+    startCommand: java -Xmx256m -jar crm-service/target/*.jar
     envVars:
       - key: SERVER_PORT
-        value: 8085
+        value: "10000"
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: DATABASE_URL
+        fromDatabase:
+          name: toptuna-db
+          property: connectionString
+    healthCheckPath: /health
 
-  # Export Service
+  # Export Service - DATEV/CSV Export
   - type: web
     name: toptuna-export
     env: java
-    buildCommand: mvn -q -DskipTests package
-    startCommand: java -jar export-service/target/*.jar
+    buildCommand: mvn -f export-service/pom.xml clean package -DskipTests -q
+    startCommand: java -Xmx256m -jar export-service/target/*.jar
     envVars:
       - key: SERVER_PORT
-        value: 8086
+        value: "10000"
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: DATABASE_URL
+        fromDatabase:
+          name: toptuna-db
+          property: connectionString
+    healthCheckPath: /health

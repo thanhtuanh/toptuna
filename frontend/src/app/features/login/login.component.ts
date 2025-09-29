@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { API_BASE } from '../../core/api.config';
+import { UserService } from '../../core/user.service';
 
 @Component({
   standalone: true,
@@ -110,7 +111,11 @@ export class LoginComponent {
   loading = false;
   error = '';
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(
+    private http: HttpClient, 
+    private router: Router,
+    private userService: UserService
+  ) {}
 
   setCredentials(user: string, pass: string) {
     this.username = user;
@@ -134,7 +139,7 @@ export class LoginComponent {
       next: (response: any) => {
         this.loading = false;
         if (response.success) {
-          localStorage.setItem('toptuna_user', JSON.stringify(response));
+          this.userService.setUser(response);
           
           if (response.role === 'ADMIN') {
             this.router.navigate(['/admin']);
