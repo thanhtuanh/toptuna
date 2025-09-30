@@ -1,6 +1,6 @@
 # docker/Dockerfile.maven
 FROM maven:3.9.9-eclipse-temurin-21 AS builder
-ARG SERVICE_DIR=gateway
+ARG SERVICE_DIR=auth-service
 WORKDIR /app
 COPY . .
 RUN mvn -B -DskipTests package -pl ${SERVICE_DIR} -am
