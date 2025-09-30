@@ -1,201 +1,110 @@
-# TopTuna B2B Portal - Fischgroßhandel für Gastronomie
 
-**B2B-Portal für Großhändler & vietnamesische Restaurants** - Bestellung, Logistik, CRM, DATEV-Integration  
-Java 21, Spring Boot 3, PostgreSQL, Angular 17, Docker
+# TopTuna — Konzept, Architektur & Roadmap
 
-## 🎯 **Zielbild**
-B2B-Portal für Großhändler & Gastronomie mit Bestell- → Kommissionier- → Liefer-Workflow inkl. Kühlkette/HACCP-Notizen, CRM und DATEV-Export.
+## 1. Kurzüberblick
+TopTuna ist ein B2B-Portal für Fisch-Großhandel mit Fokus auf vietnamesische Restaurants. Ziel: Verwaltung, Verkauf und operative Steuerung (Katalog, Bestellungen, Logistik, Rechnungswesen inkl. DATEV) — responsiv für Web/Tablet/Smartphone.
 
-## 🚀 **Quick Deploy to Render.com**
+## 2. Ziele (Vision)
+- Mächtiges Admin-Cockpit für Geschäftszahlen, Lager, Lieferungen und Personal.
+- Käuferfreundlicher B2B-Shop (responsive, multilingual DE/VI/EN).
+- KI-gestützte Marketing- und Produkt-Tools (Texte, Angebote, Prognosen).
+- Saubere Buchhaltung-Integration (DATEV, Lexware, Excel).
+- DSGVO-konform und EU-rechtlich abgesichert.
 
-### One-Click Deployment
-```bash
-# Install Render CLI and deploy
-npm install -g @render/cli
-./deploy-render.sh
-```
+## 3. Kernfunktionen (MVP → Priorität)
+1. Auth & Rollen (ADMIN, MARKETING, DISPO, DRIVER, ACCOUNTING, CUSTOMER).  
+2. Produktkatalog mit Staffelpreisen, PWA-Frontend.  
+3. Warenkorb, Bestellprozess, Order-Management.  
+4. Logistics: Touren, Fahrer-App, HACCP-Checks.  
+5. Rechnungen, persistente Buchungszeilen, DATEV-Export.  
+6. Admin-Dashboard: Umsatz, Lager, Pünktlichkeit, ToDos.  
+7. KI: Produkt-Beschreibungsgenerator, Smart-Reorder, Marketing-Templates.
 
-### Production URLs
-- **Frontend**: https://toptuna-frontend.onrender.com
-- **API Gateway**: https://toptuna-gateway.onrender.com
-- **Admin Login**: admin / admin
+## 4. Architektur (High-level)
 
-### GitHub CI/CD
-- **Auto-deploy** on push to main
-- **Test builds** on pull requests
-- **Full stack** deployment with render.yaml
+  [Frontend PWA (Angular)]
+  ↕ HTTPS
+  [API Gateway (Spring Cloud Gateway)]
+  ↕ REST/gRPC
+  [Microservices (Spring Boot) per bounded context]
 
----
+  auth-service (JWT)
 
-## 🏠 **Local Development**
+  catalog-service
 
-### Build & Run Complete Stack
-```bash
-# Build all services
-mvn -q -DskipTests package
+  order-service
 
-# Start with PostgreSQL
-docker compose -f ops/docker-compose.yml up --build
+  logistics-service
 
-# Or use convenience scripts
-./scripts/start.sh    # Start complete stack
-./scripts/test-api.sh # Test all APIs
-./scripts/demo.sh     # Quick demo
-```
+  crm-service
 
-### Access Points
-- **Frontend**: http://localhost:4200
-- **Gateway**: http://localhost:8080/health
-- **API Endpoints**:
-  - Auth: http://localhost:8080/api/auth/login
-  - Products: http://localhost:8080/api/catalog/products?category=Lachs
-  - Orders: http://localhost:8080/api/orders/customer/rest_001
-  - Logistics: http://localhost:8080/api/logistics/routes/today
-  - CRM: http://localhost:8080/api/crm/customers/segments
-  - Export: http://localhost:8080/api/export/datev/invoices
+  export-service (DATEV / Lexware / XLSX)
 
-## 🎨 **Professional Frontend**
+  marketing-service (KI-proxy)
+  ↕
+  [Postgres DB(s)] (prod: one DB per service or managed DB instances)
+  ↕
+  [Object Storage] (Produktbilder, Belege)
+  ↕
+  [Monitoring / Metrics / Notifications]
+## 5. Deployment & CI
+- CI: GitHub Actions (build → test → deploy).  
+- Prod: Render.com (render.yaml) mit Secrets (JWT_SECRET, DATABASE_URL).  
+- Frontend: build-time injection `API_BASE` (Gateway URL).  
+- DB: Postgres 15/16 (pin Major-Version), Flyway für Migrationen.
 
-### Multi-Language Support (DE/EN/VI)
-- **German** - Primary business language
-- **English** - International communication
-- **Vietnamese** - Native language for restaurant owners
+## 6. EU-rechtliche Anforderungen (Kurz)
+- **DSGVO**: Datenminimierung, Löschkonzepte, Einwilligungen für Marketing, Datenzugriffs-/Export-Mechanismen für Betroffene.  
+- **ePrivacy / Cookies**: Cookie-Banner / Consent-Management für Tracking & Newsletter.  
+- **Buchhaltung/Steuern**: Fristen (UStVA etc.) beachten und Export-Audit loggen.  
+> Hinweis: Das README gibt Hinweise — für verbindliche rechtliche Behandlung empfehle ich Rücksprache mit einem Fachanwalt / Steuerberater.
 
-### TopTuna.de Design
-- **Professional blue theme** matching corporate identity
-- **Interactive service dashboard** with real-time monitoring
-- **Demo data testing** for all business functions
-- **Responsive design** for desktop and mobile
+## 7. Security & Operations (Essentiell)
+- Secrets niemals im VCS. Nutze Render Secrets / K8s Secrets / GitHub Secrets.  
+- HTTPS überall, HSTS am Gateway, CORS eng konfigurieren.  
+- JWT short-lived + Refresh, rollenbasierte Endpoint-Security.  
+- Backups: tägliche DB-Backups, Disaster-Recovery plan.  
+- Observability: Actuator + Prometheus + Grafana + Zentral-Logs.
 
-### Demo Users
-| Username | Password | Role | Description |
-|----------|----------|------|-------------|
-| `admin` | `admin` | Administrator | Full system access |
-| `saigon_sushi` | `test` | Restaurant Owner | Vietnamese Sushi restaurant |
-| `driver_duc` | `test` | Driver | HACCP delivery tracking |
-| `dispo_mai` | `test` | Dispatcher | Route planning |
+## 8. UX & Accessibility
+- Mobile-first Design (Telefon für Fahrer & Gastronomen).  
+- Mehrsprachigkeit (DE/VI/EN) mit Übersetzungs-Workflow.  
+- WCAG 2.1 Basic Compliance: Kontraste, Keyboard-Navigation, Alt-Texte.
 
-## 🏗️ **Architecture**
-- **Frontend**: Angular 17 (DE/VI/EN) + PWA - Port 4200
-- **Gateway**: Spring Cloud Gateway - Port 8080  
-- **Auth Service**: JWT + Rollen (Admin/Dispo/Fahrer/Kunde) - Port 8081
-- **Catalog Service**: Produktkatalog + Staffelpreise - Port 8082
-- **Order Service**: Warenkorb + Bestellmanagement - Port 8083
-- **Logistics Service**: Tour-/Lieferplanung + HACCP - Port 8084
-- **CRM Service**: Kundendaten + Segmente + Kampagnen - Port 8085
-- **Export Service**: DATEV/CSV Export - Port 8086
+## 9. DATEV / Lexware / Excel Integration
+- DATEV: CSV-Export (Windows-1252, Semikolon), Audit-Tabelle `datev_export`.  
+- Lexware: CSV-Templates für Stammdaten + Buchungen (falls nötig via DATEV).  
+- Excel (XLSX) für manuelle Reports (Apache POI).
 
-## 🐟 **Business Features**
+## 10. Roadmap (Phasen)
+### Phase 0 — Setup (Basis)
+- Repo, CI, render.yaml, lokale Docker Compose (Postgres), Flyway V1 (Schema)
+- Frontend basic, Gateway, Auth
 
-### **Bestellprozess**
-- Kategorie wählen → Warenkorb → Lieferfenster → Bestellung
-- Mindestbestellmenge, Staffelpreise, Zahlungsart (Rechnung)
-- Bestellbestätigung DE/VI per E-Mail/SMS
+### Phase 1 — MVP Commerce & Ops
+- Catalog, Orders, Checkout, Invoice generation
+- Logistics basic (deliveries, driver marking)
+- DATEV export basic, Admin Dashboard skeleton
 
-### **Logistik-Workflow**
-- Tour-/Lieferplanung mit Slots
-- Packliste (PDF), Lieferstatus
-- HACCP-Notizen, Kühlkette-Tracking
+### Phase 2 — Stabilisierung & Security
+- RBAC, TLS, secret rotation, unit/integration tests, staging deploy
+- Observability, backups, DB migrations hardened
 
-### **CRM & Segmentierung**
-- Kundendaten, Ansprechpartner, Notizen
-- Segmente: "Sushi", "Pho", "Thai", "Chinesisch"
-- Kampagnen, Loyalty-Programme
+### Phase 3 — Growth & KI
+- KI: product description generator, marketing templates, recommendations
+- Admin CMS + scheduling, A/B testing, email/WhatsApp automation
 
-### **Export & Integration**
-- DATEV-Export (Rechnungen, Debitoren)
-- CSV-Export für Buchhaltung
-- Admin-Dashboard: Tagesumsatz, offene Bestellungen
+### Phase 4 — Scale & Compliance
+- Multi-warehouse, advanced routing, high-availability DB, hardened GDPR processes
+- Tax automation (deadlines, reminders), Lexware integrations, accountant workflows
 
-### **Mehrsprachigkeit**
-- UI + Produkttexte (DE/VI), Fallback EN
-- Vietnamesische Fachbegriffe für Gastronomie
-- Kulturspezifische Ansprache
+## 11. Entwicklung / How to contribute
+- Branching: `main` = prod, `develop` = pre-prod, feature branches `feat/*`.  
+- Commit-Format: `TYPE(scope): short summary` + `refs todo#<step>` wenn relevant.  
+- Tests: Unit + Integration (Testcontainers) in CI.
 
-## 📊 **Demo Data**
+## 12. Todo Tracking (automatisch per todo.md)
+Wir nutzen `todo.md` als single-source-of-truth für Schritte. Nach jedem erledigten Step kann man lokal `./scripts/mark-step-done.sh <NUMMER>` ausführen, um Schritt als erledigt zu markieren und Fortschritt oben zu aktualisieren.
 
-### **30 Premium Fish Products**
-- **Lachs** (3): Norwegisch, Schottisch, Ganzer Lachs
-- **Thunfisch** (3): Yellowfin Loin, Steaks, Tataki
-- **Garnelen** (3): Black Tiger, White Shrimps, King Prawns
-- **Aal** (2): Unagi, Räucheraal
-- **Edelfisch** (4): Wolfsbarsch, Dorade, Kabeljau, Heilbutt
-- **Meeresfrüchte** (8): Tintenfisch, Oktopus, Jakobsmuscheln, Austern
-- **Krebstiere** (3): Hummer, Schneekrabben, Flusskrebse
-- **Weitere** (4): Seeteufel, Rotbarsch, Makrele, Sardinen
-
-### **Vietnamese Restaurant Customers**
-- **91 Kunden** in Berlin (45), Heidelberg (28), München (18)
-- **Segmente**: Sushi, Chinesisch, Thai-Restaurants
-- **Realistische Bestelldaten** mit Lieferhistorie
-
-## 🧪 **Testing & Scripts**
-
-### **Management Scripts**
-```bash
-./scripts/start.sh    # Start complete stack with health checks
-./scripts/stop.sh     # Clean shutdown
-./scripts/dev.sh      # Development utilities (build, logs, restart)
-```
-
-### **API Testing**
-```bash
-./scripts/test-api.sh # Complete API test suite (25+ endpoints)
-./scripts/demo.sh     # Live business demo
-```
-
-### **Comprehensive Testing**
-- ✅ **6 Microservices** with health monitoring
-- ✅ **Authentication** with role-based access
-- ✅ **30 Fish Products** with Vietnamese names
-- ✅ **HACCP Logistics** with temperature tracking
-- ✅ **CRM Segments** for restaurant types
-- ✅ **DATEV Export** for German accounting
-
-## 📋 **Project Structure**
-```
-toptuna-b2b/
-├── frontend/              # Angular 17 PWA (DE/VI/EN)
-├── gateway/              # Spring Cloud Gateway + Security
-├── auth-service/         # JWT + Rollen-Management
-├── catalog-service/      # Produktkatalog + Staffelpreise
-├── order-service/        # Warenkorb + Bestellmanagement
-├── logistics-service/    # Tour-/Lieferplanung + HACCP
-├── crm-service/         # CRM + Kundensegmente + Kampagnen
-├── export-service/      # DATEV/CSV Export
-├── scripts/             # Management & Testing Scripts
-├── ops/                 # Docker + PostgreSQL + init.sql
-├── BENUTZERANLEITUNG.md # Complete user guide
-├── TESTING.md           # Testing documentation
-└── DEPLOYMENT.md        # Deployment guide
-```
-
-## 🎯 **MVP-Umfang (12 Wochen)**
-**Was Kunden sofort spüren**: Einfache Bestellung, klare Preise, Bestellhistorie, Lieferavis per Mail/SMS (DE/VI)
-
-### **Roadmap**
-- **Woche 1-2**: Foundation (Auth, DB, Angular Shell)
-- **Woche 3-4**: Katalog & Bestellung (Warenkorb, Validierung)
-- **Woche 5-6**: Logistik (Lieferfenster, Tourplanung, PDF)
-- **Woche 7-8**: CRM (Segmente, Historie, Nachbestellung)
-- **Woche 9**: Export (DATEV, Admin-Dashboard)
-- **Woche 10**: Mehrsprachige Inhalte (DE/VI Produkttexte)
-- **Woche 11**: Pilot-Test (3-5 vietnamesische Restaurants)
-- **Woche 12**: Go-Live TopTuna
-
-## 📈 **KPIs (Pilot)**
-- **Conversion**: 30-50% der Restaurants bestellen binnen 2 Wochen
-- **Wiederkauf**: ≥60% binnen 30 Tagen  
-- **Support**: <10 min pro Bestellung
-- **Fehlerrate**: <1% (falsche Position/Menge)
-- **Lieferpünktlichkeit**: ≥95%
-
-## 👥 **Rollen & Rechte**
-- **Admin**: Vollzugriff, Konfiguration, Reports
-- **Dispo**: Bestellungen, Tourplanung, Kommissionierung  
-- **Fahrer**: Tourdaten, Lieferstatus, HACCP-Notizen
-- **Kunde (Restaurant)**: Bestellung, Historie, eigene Preise
-
----
-
-**TopTuna B2B Portal** - Professioneller Fischgroßhandel für vietnamesische Restaurants in Deutschland 🐟🇩🇪🇻🇳
+## 13. Kontakt & Weiteres
+Bei Fragen oder wenn du möchtest, kann ich die Migrationen, Controller, Admin-UI und das KI-Proxy direkt als Patch generieren — sage mir welche Phase oder welches Ticket du zuerst willst.
