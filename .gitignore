@@ -1,3 +1,5 @@
+# .gitignore (Projekt-Root)
+
 # Maven / Java
 /target/
 /**/target/
@@ -44,6 +46,13 @@ yarn-error.log*
 .env.*.local
 .env.local
 .env.production
+.env.production.local
+.env.test
+.env.test.local
+.env.staging
+.env.staging.local
+.env.prod
+.env.*.prod
 build/
 tmp/
 *.tmp
@@ -64,6 +73,21 @@ Thumbs.db
 .dockerignore
 docker-compose.override.yml
 docker-compose.*.yml
+
+# Secrets / credential files (project-level)
+# (Verhindert versehentliches Committen sensibler Daten)
+.secrets/
+secrets.properties
+*.secret
+*.key
+jwt.key
+jwt.pem
+*.pem
+*.p12
+
+# Optional: CI/CD local overrides
+.env.ci
+.env.local.*.override
 
 # optional: ignore polyfills if you don't want them in repo
 # src/polyfills.ts

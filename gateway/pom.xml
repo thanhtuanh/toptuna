@@ -64,6 +64,12 @@
       <version>3.0.0</version>
     </dependency>
 
+    <!-- gateway/pom.xml -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+
 
   </dependencies>
 </project>

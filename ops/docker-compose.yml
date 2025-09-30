@@ -1,4 +1,6 @@
-# ops/docker-compose.yml
+# ops/docker-compose.yml (angepasst)
+version: "3.8"
+
 services:
   frontend:
     build:
@@ -9,6 +11,8 @@ services:
       - "4200:80"
     depends_on:
       - gateway
+    env_file:
+      - ../.env
 
   gateway:
     build:
@@ -22,7 +26,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - ENV=dev  # Setzt ENV auf "dev" für lokale Entwicklung
+      - ENV=dev
       - SERVER_PORT=8080
       - GATEWAY_ALLOWED_ORIGINS=http://localhost:4200
       - AUTH_URL=http://auth:8081
@@ -31,6 +35,10 @@ services:
       - LOGISTICS_URL=http://logistics:8084
       - CRM_URL=http://crm:8085
       - EXPORT_URL=http://export:8086
+      # Optional: Gateway möchte ggf. Tokens prüfen -> secret weitergeben (nur lokal/test)
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRATION_MS=${JWT_EXPIRATION_MS}
+      - JWT_REFRESH_EXPIRATION_MS=${JWT_REFRESH_EXPIRATION_MS}
     depends_on:
       - auth
       - catalog
@@ -39,7 +47,7 @@ services:
       - crm
       - export
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-S", "http://localhost:8080/health"]
+      test: ["CMD", "sh", "-c", "curl -f http://localhost:8080/actuator/health || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 12
@@ -52,12 +60,18 @@ services:
       args:
         SERVICE_DIR: auth-service
     image: ops-auth:latest
+    env_file:
+      - ../.env
     environment:
       - SERVER_PORT=8081
+      # Wichtig: JWT_SECRET in den Container übergeben (wird in application.properties zu jwt.secret)
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRATION_MS=${JWT_EXPIRATION_MS}
+      - JWT_REFRESH_EXPIRATION_MS=${JWT_REFRESH_EXPIRATION_MS}
     ports:
       - "8081:8081"
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-S", "http://localhost:8081/actuator/health" ]
+      test: ["CMD", "sh", "-c", "curl -f http://localhost:8081/actuator/health || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 12
@@ -70,14 +84,15 @@ services:
       args:
         SERVICE_DIR: catalog-service
     image: ops-catalog:latest
+    env_file:
+      - ../.env
     environment:
       - SERVER_PORT=8082
       - SEED_FILE=classpath:seeds/toptuna_demo_products.csv
-      #- SEED_FILE=/app/resources/seeds/toptuna_demo_products.csv
     ports:
       - "8082:8082"
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-S", "http://localhost:8082/actuator/health" ]
+      test: ["CMD", "sh", "-c", "curl -f http://localhost:8082/actuator/health || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 12
@@ -90,12 +105,14 @@ services:
       args:
         SERVICE_DIR: order-service
     image: ops-orders:latest
+    env_file:
+      - ../.env
     environment:
       - SERVER_PORT=8083
     ports:
       - "8083:8083"
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-S", "http://localhost:8083/actuator/health" ]
+      test: ["CMD", "sh", "-c", "curl -f http://localhost:8083/actuator/health || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 12
@@ -108,12 +125,14 @@ services:
       args:
         SERVICE_DIR: logistics-service
     image: ops-logistics:latest
+    env_file:
+      - ../.env
     environment:
       - SERVER_PORT=8084
     ports:
       - "8084:8084"
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-S", "http://localhost:8084/actuator/health" ]
+      test: ["CMD", "sh", "-c", "curl -f http://localhost:8084/actuator/health || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 12
@@ -126,12 +145,14 @@ services:
       args:
         SERVICE_DIR: crm-service
     image: ops-crm:latest
+    env_file:
+      - ../.env
     environment:
       - SERVER_PORT=8085
     ports:
       - "8085:8085"
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-S", "http://localhost:8085/actuator/health" ]
+      test: ["CMD", "sh", "-c", "curl -f http://localhost:8085/actuator/health || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 12
@@ -144,12 +165,14 @@ services:
       args:
         SERVICE_DIR: export-service
     image: ops-export:latest
+    env_file:
+      - ../.env
     environment:
       - SERVER_PORT=8086
     ports:
       - "8086:8086"
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-S", "http://localhost:8086/actuator/health" ]
+      test: ["CMD", "sh", "-c", "curl -f http://localhost:8086/actuator/health || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 12
