@@ -14,8 +14,20 @@ services:
   - type: web
     name: toptuna-frontend
     env: static
-    buildCommand: cd frontend && npm ci && npm run build:prod
+    # Build: wir ersetzen vor dem Build den Platzhalter in einer template-Datei
+    # (siehe src/environments/environment.prod.template.ts -> __API_BASE__)
+    buildCommand: |
+      cd frontend
+      npm ci
+      # Ersetze Platzhalter in environment.prod.template.ts mit Gateway-URL
+      # (alternativ: setze hier ${API_BASE} als secret / envVar falls du dynamisch bauen willst)
+      sed -i "s|__API_BASE__|https://toptuna-gateway.onrender.com/api|g" src/environments/environment.prod.template.ts || true
+      mv src/environments/environment.prod.template.ts src/environments/environment.prod.ts
+      npm run build:prod
     staticPublishPath: frontend/dist/toptuna-frontend
+    envVars:
+      - key: API_BASE
+        value: https://toptuna-gateway.onrender.com/api
     routes:
       - type: rewrite
         source: /*
@@ -33,10 +45,9 @@ services:
     name: toptuna-gateway
     env: java
     buildCommand: mvn -f gateway/pom.xml clean package -DskipTests -q
-    startCommand: java -Xmx512m -jar gateway/target/*.jar
+    # Use Render's injected $PORT (don't hardcode)
+    startCommand: java -Xmx512m -Dserver.port=$PORT -jar gateway/target/*.jar
     envVars:
-      - key: SERVER_PORT
-        value: "10000"
       - key: SPRING_PROFILES_ACTIVE
         value: prod
       - key: DATABASE_URL
@@ -58,7 +69,9 @@ services:
       - key: GATEWAY_ALLOWED_ORIGINS
         value: https://toptuna-frontend.onrender.com
       - key: JWT_SECRET
-        generateValue: true
+        # WICHTIG: Trage hier nicht im Repo ein. Erstelle in Render Dashboard einmalig ein Secret namens "JWT_SECRET"
+        # und setze denselben Wert für Auth und Gateway (und evtl. andere Services, die Token verifizieren).
+        value: "<SET_IN_RENDER_DASHBOARD:JWT_SECRET>"
     healthCheckPath: /health
 
   # Auth Service - JWT + Rollen (Admin/Dispo/Fahrer/Kunde)
@@ -66,10 +79,8 @@ services:
     name: toptuna-auth
     env: java
     buildCommand: mvn -f auth-service/pom.xml clean package -DskipTests -q
-    startCommand: java -Xmx256m -jar auth-service/target/*.jar
+    startCommand: java -Xmx256m -Dserver.port=$PORT -jar auth-service/target/*.jar
     envVars:
-      - key: SERVER_PORT
-        value: "10000"
       - key: SPRING_PROFILES_ACTIVE
         value: prod
       - key: DATABASE_URL
@@ -77,7 +88,8 @@ services:
           name: toptuna-db
           property: connectionString
       - key: JWT_SECRET
-        generateValue: true
+        # Bitte denselben Secret-Wert wie im Gateway verwenden
+        value: "<SET_IN_RENDER_DASHBOARD:JWT_SECRET>"
     healthCheckPath: /health
 
   # Catalog Service - Produktkatalog + Staffelpreise
@@ -85,10 +97,8 @@ services:
     name: toptuna-catalog
     env: java
     buildCommand: mvn -f catalog-service/pom.xml clean package -DskipTests -q
-    startCommand: java -Xmx256m -jar catalog-service/target/*.jar
+    startCommand: java -Xmx256m -Dserver.port=$PORT -jar catalog-service/target/*.jar
     envVars:
-      - key: SERVER_PORT
-        value: "10000"
       - key: SPRING_PROFILES_ACTIVE
         value: prod
       - key: DATABASE_URL
@@ -102,10 +112,8 @@ services:
     name: toptuna-orders
     env: java
     buildCommand: mvn -f order-service/pom.xml clean package -DskipTests -q
-    startCommand: java -Xmx256m -jar order-service/target/*.jar
+    startCommand: java -Xmx256m -Dserver.port=$PORT -jar order-service/target/*.jar
     envVars:
-      - key: SERVER_PORT
-        value: "10000"
       - key: SPRING_PROFILES_ACTIVE
         value: prod
       - key: DATABASE_URL
@@ -119,10 +127,8 @@ services:
     name: toptuna-logistics
     env: java
     buildCommand: mvn -f logistics-service/pom.xml clean package -DskipTests -q
-    startCommand: java -Xmx256m -jar logistics-service/target/*.jar
+    startCommand: java -Xmx256m -Dserver.port=$PORT -jar logistics-service/target/*.jar
     envVars:
-      - key: SERVER_PORT
-        value: "10000"
       - key: SPRING_PROFILES_ACTIVE
         value: prod
       - key: DATABASE_URL
@@ -136,10 +142,8 @@ services:
     name: toptuna-crm
     env: java
     buildCommand: mvn -f crm-service/pom.xml clean package -DskipTests -q
-    startCommand: java -Xmx256m -jar crm-service/target/*.jar
+    startCommand: java -Xmx256m -Dserver.port=$PORT -jar crm-service/target/*.jar
     envVars:
-      - key: SERVER_PORT
-        value: "10000"
       - key: SPRING_PROFILES_ACTIVE
         value: prod
       - key: DATABASE_URL
@@ -153,10 +157,8 @@ services:
     name: toptuna-export
     env: java
     buildCommand: mvn -f export-service/pom.xml clean package -DskipTests -q
-    startCommand: java -Xmx256m -jar export-service/target/*.jar
+    startCommand: java -Xmx256m -Dserver.port=$PORT -jar export-service/target/*.jar
     envVars:
-      - key: SERVER_PORT
-        value: "10000"
       - key: SPRING_PROFILES_ACTIVE
         value: prod
       - key: DATABASE_URL

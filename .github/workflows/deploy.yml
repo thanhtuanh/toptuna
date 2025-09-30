@@ -17,12 +17,27 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # ------------------------
+      # API_BASE (Gateway) setzen
+      # ------------------------
+      # Wenn du ein secret API_BASE in GitHub Secrets anlegst, wird dieses verwendet.
+      # Andernfalls wird als Fallback die Gateway-URL verwendet.
+      - name: Set API_BASE (from secrets or fallback)
+        run: |
+          if [ -z "${{ secrets.API_BASE }}" ]; then
+            echo "API_BASE=https://toptuna-gateway.onrender.com/api" >> $GITHUB_ENV
+            echo "Using fallback API_BASE"
+          else
+            echo "API_BASE=${{ secrets.API_BASE }}" >> $GITHUB_ENV
+            echo "Using secrets.API_BASE"
+          fi
+
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'temurin'
-          cache: 'maven'               # built-in maven cache (actions/setup-java v4)
+          cache: 'maven'
 
       - name: Cache Maven repository (fallback / extra)
         uses: actions/cache@v4
@@ -36,7 +51,7 @@ jobs:
         working-directory: .
         run: |
           mvn -B -V test
-      # Build backend artifacts (skip tests to save time since already ran)
+
       - name: Package backend (skip tests)
         run: mvn -B -DskipTests package
 
@@ -49,7 +64,6 @@ jobs:
       - name: Cache frontend node_modules (npm)
         uses: actions/cache@v4
         with:
-          # caches npm global cache + project node_modules as fallback
           path: |
             ~/.npm
             frontend/node_modules
@@ -60,6 +74,25 @@ jobs:
       - name: Install Frontend Dependencies
         run: npm ci
         working-directory: ./frontend
+
+      # ------------------------
+      # API_BASE in env.template ersetzen
+      # ------------------------
+      - name: Inject API_BASE into frontend prod env
+        working-directory: ${{ github.workspace }}
+        run: |
+          # Datei-Pfad: frontend/src/environments/environment.prod.template.ts
+          TEMPLATE="frontend/src/environments/environment.prod.template.ts"
+          TARGET="frontend/src/environments/environment.prod.ts"
+
+          if [ -f "$TEMPLATE" ]; then
+            echo "Template found: $TEMPLATE"
+            sed -i "s|__API_BASE__|$API_BASE|g" "$TEMPLATE"
+            mv "$TEMPLATE" "$TARGET"
+            echo "Wrote $TARGET with API_BASE=$API_BASE"
+          else
+            echo "No environment.prod.template.ts found -> skipping injection (ensure your prod env file exists)"
+          fi
 
       - name: Build Frontend
         run: npm run build --if-present
@@ -74,14 +107,24 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Optional: re-use caches on deploy runner if you plan to build in the workflow before deploy
       - name: Set up Node.js (deploy step)
         uses: actions/setup-node@v4
         with:
           node-version: '18'
 
+      # Hinweis: Die Render API / Action benötigt API Key + Service ID als Repository Secrets.
+      # Erstelle in GitHub: RENDER_API_KEY und RENDER_SERVICE_ID (oder mehrere Deploy-Calls für weitere Services).
       - name: Deploy to Render
         uses: johnbeynon/render-deploy-action@v0.0.8
         with:
           service-id: ${{ secrets.RENDER_SERVICE_ID }}
           api-key: ${{ secrets.RENDER_API_KEY }}
+
+      # Optional: wenn du mehrere Render Services einzeln triggern willst, kannst du hier
+      # weitere Aufrufe von render-deploy-action mit anderen service-ids hinzufügen.
+      # z.B.:
+      # - name: Deploy gateway on Render
+      #   uses: johnbeynon/render-deploy-action@v0.0.8
+      #   with:
+      #     service-id: ${{ secrets.RENDER_GATEWAY_SERVICE_ID }}
+      #     api-key: ${{ secrets.RENDER_API_KEY }}
