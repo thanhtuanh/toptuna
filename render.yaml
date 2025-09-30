@@ -19,8 +19,6 @@ services:
     buildCommand: |
       cd frontend
       npm ci
-      # Ersetze Platzhalter in environment.prod.template.ts mit Gateway-URL
-      # (alternativ: setze hier ${API_BASE} als secret / envVar falls du dynamisch bauen willst)
       sed -i "s|__API_BASE__|https://toptuna-gateway.onrender.com/api|g" src/environments/environment.prod.template.ts || true
       mv src/environments/environment.prod.template.ts src/environments/environment.prod.ts
       npm run build:prod
@@ -40,13 +38,11 @@ services:
         name: X-Content-Type-Options
         value: nosniff
 
-  # Gateway - Spring Cloud Gateway + Security
+  # Gateway - Spring Cloud Gateway + Security (Docker)
   - type: web
     name: toptuna-gateway
-    env: java
-    buildCommand: mvn -f gateway/pom.xml clean package -DskipTests -q
-    # Use Render's injected $PORT (don't hardcode)
-    startCommand: java -Xmx512m -Dserver.port=$PORT -jar gateway/target/*.jar
+    env: docker
+    dockerfilePath: gateway/Dockerfile
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: prod
@@ -69,17 +65,14 @@ services:
       - key: GATEWAY_ALLOWED_ORIGINS
         value: https://toptuna-frontend.onrender.com
       - key: JWT_SECRET
-        # WICHTIG: Trage hier nicht im Repo ein. Erstelle in Render Dashboard einmalig ein Secret namens "JWT_SECRET"
-        # und setze denselben Wert für Auth und Gateway (und evtl. andere Services, die Token verifizieren).
         value: "<SET_IN_RENDER_DASHBOARD:JWT_SECRET>"
     healthCheckPath: /health
 
-  # Auth Service - JWT + Rollen (Admin/Dispo/Fahrer/Kunde)
+  # Auth Service - JWT + Rollen (Docker)
   - type: web
     name: toptuna-auth
-    env: java
-    buildCommand: mvn -f auth-service/pom.xml clean package -DskipTests -q
-    startCommand: java -Xmx256m -Dserver.port=$PORT -jar auth-service/target/*.jar
+    env: docker
+    dockerfilePath: auth-service/Dockerfile
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: prod
@@ -88,16 +81,14 @@ services:
           name: toptuna-db
           property: connectionString
       - key: JWT_SECRET
-        # Bitte denselben Secret-Wert wie im Gateway verwenden
         value: "<SET_IN_RENDER_DASHBOARD:JWT_SECRET>"
     healthCheckPath: /health
 
-  # Catalog Service - Produktkatalog + Staffelpreise
+  # Catalog Service - Produktkatalog + Staffelpreise (Docker)
   - type: web
     name: toptuna-catalog
-    env: java
-    buildCommand: mvn -f catalog-service/pom.xml clean package -DskipTests -q
-    startCommand: java -Xmx256m -Dserver.port=$PORT -jar catalog-service/target/*.jar
+    env: docker
+    dockerfilePath: catalog-service/Dockerfile
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: prod
@@ -107,12 +98,11 @@ services:
           property: connectionString
     healthCheckPath: /health
 
-  # Order Service - Warenkorb + Bestellmanagement
+  # Order Service - Warenkorb + Bestellmanagement (Docker)
   - type: web
     name: toptuna-orders
-    env: java
-    buildCommand: mvn -f order-service/pom.xml clean package -DskipTests -q
-    startCommand: java -Xmx256m -Dserver.port=$PORT -jar order-service/target/*.jar
+    env: docker
+    dockerfilePath: order-service/Dockerfile
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: prod
@@ -122,12 +112,11 @@ services:
           property: connectionString
     healthCheckPath: /health
 
-  # Logistics Service - Tour-/Lieferplanung + HACCP
+  # Logistics Service - Tour-/Lieferplanung + HACCP (Docker)
   - type: web
     name: toptuna-logistics
-    env: java
-    buildCommand: mvn -f logistics-service/pom.xml clean package -DskipTests -q
-    startCommand: java -Xmx256m -Dserver.port=$PORT -jar logistics-service/target/*.jar
+    env: docker
+    dockerfilePath: logistics-service/Dockerfile
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: prod
@@ -137,12 +126,11 @@ services:
           property: connectionString
     healthCheckPath: /health
 
-  # CRM Service - Kundendaten + Segmente + Kampagnen
+  # CRM Service - Kundendaten + Segmente + Kampagnen (Docker)
   - type: web
     name: toptuna-crm
-    env: java
-    buildCommand: mvn -f crm-service/pom.xml clean package -DskipTests -q
-    startCommand: java -Xmx256m -Dserver.port=$PORT -jar crm-service/target/*.jar
+    env: docker
+    dockerfilePath: crm-service/Dockerfile
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: prod
@@ -152,12 +140,11 @@ services:
           property: connectionString
     healthCheckPath: /health
 
-  # Export Service - DATEV/CSV Export
+  # Export Service - DATEV/CSV Export (Docker)
   - type: web
     name: toptuna-export
-    env: java
-    buildCommand: mvn -f export-service/pom.xml clean package -DskipTests -q
-    startCommand: java -Xmx256m -Dserver.port=$PORT -jar export-service/target/*.jar
+    env: docker
+    dockerfilePath: export-service/Dockerfile
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: prod
