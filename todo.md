@@ -1,8 +1,8 @@
 🌊 TopTuna Aufgabenliste
-Diese Datei dient als zentrale Quelle zur Verfolgung der Entwicklungsschritte für TopTuna, ein B2B-Portal für Fisch-Großhandel, speziell für vietnamesische Restaurants. Führe ./scripts/mark-step-done.sh <NUMMER> lokal aus, um einen Schritt als erledigt zu markieren. Der Fortschritt wird automatisch aktualisiert und protokolliert.
+Diese Datei dient als zentrale Quelle zur Verfolgung der Entwicklungsschritte für TopTuna, ein B2B-Portal für Fisch-Großhandel, speziell für vietnamesische Restaurants. Führe ./scripts/mark-step-done.sh <NUMMER> lokal aus, um einen Schritt als erledigt zu markieren. Der Fortschritt wird automatisch aktualisiert und in todo.log protokolliert.
 
 📋 Fortschrittsübersicht
-Fortschritt: 0/23 Schritte abgeschlossen (Wird automatisch über ./scripts/update-todo.sh aktualisiert)
+Fortschritt: 0/25 Schritte abgeschlossen (Wird automatisch über ./scripts/update-todo.sh aktualisiert)
 
 🚀 Phase 0: Setup (Basis)
 Aufbau der grundlegenden Infrastruktur und Tools für TopTuna.
@@ -25,7 +25,7 @@ Phase 0
 
 
 2
-Docker Compose (Postgres 15/16) + Flyway V1 Schema (Produkte, Kunden, Bestellungen, Rollen).
+Docker Compose (Postgres 15/16) + Flyway V1 Schema (Produkte, Kunden, Bestellungen, Rollen, Bild-URLs).
 Hoch
 3 Tage
 Phase 0
@@ -47,7 +47,7 @@ Phase 0
 
 
 🛒 Phase 1: MVP Commerce & Betrieb
-Entwicklung der Kernfunktionen für Handel und operative Abläufe.
+Entwicklung der Kernfunktionen für Handel und operative Abläufe, inklusive Synchronisation mit toptuna.de.
 
 
 
@@ -98,6 +98,20 @@ Phase 1
 Kunden-Dashboard — Bestellverlauf, herunterladbare Berichte (Excel/PDF).
 Mittel
 4 Tage
+Phase 1
+
+
+24
+Manueller Import von Produkten und Bildern von toptuna.de — CSV-Upload für Katalog (Produktnamen, Beschreibungen, Bild-URLs) in Postgres/Object Storage.
+Hoch
+3 Tage
+Phase 1
+
+
+25
+Automatische Synchronisation mit toptuna.de — Scheduled Job (Spring Boot, Jsoup) für Produkte, Beschreibungen und Bilder, DSGVO-konformer Audit-Log.
+Mittel
+5 Tage
 Phase 1
 
 
@@ -238,7 +252,7 @@ Phase 4
 📝 Hinweise
 
 Fortschritt verfolgen über GitHub Issues, die mit dieser Datei verknüpft sind.
-Führe ./scripts/mark-step-done.sh <NUMMER> nach Abschluss eines Schritts aus, um todo.md zu aktualisieren und Änderungen in todo.log zu protokollieren.
+Führe ./scripts/mark-step-done.sh <NUMMER> nach Abschluss eines Schritts aus, um todo.md zu aktualisieren und Änderungen in todo.log zu protokolliert.
 Geschätzte Zeiten basieren auf einem kleinen Team (2-3 Entwickler). Passe sie an deine Ressourcen an.
-Compliance: Konsultiere einen Anwalt/Steuerberater für DSGVO und Steuer-Compliance vor Abschluss von Phase 2.
+Compliance: Konsultiere einen Anwalt/Steuerberater für DSGVO und Steuer-Compliance vor Abschluss von Phase 2, insbesondere für Bild- und Datenimport von toptuna.de.
 Feedback: Teste mit vietnamesischen Nutzern, um sicherzustellen, dass die VI-Lokalisierung ihren Anforderungen entspricht.
