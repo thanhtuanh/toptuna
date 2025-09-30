@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiBase: 'http://localhost:8080/api'
+  apiBase: 'https://toptuna-gateway.onrender.com/api'
 };
