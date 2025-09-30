@@ -1,115 +1,159 @@
-🌊 TopTuna — Ý tưởng, Kiến trúc & Lộ trình
-1. Tổng quan
-TopTuna là một cổng B2B dành cho bán sỉ hải sản, tập trung vào các nhà hàng Việt Nam. Mục tiêu: Quản lý hiệu quả, bán hàng và kiểm soát vận hành (danh mục sản phẩm, đơn hàng, logistics, kế toán bao gồm DATEV) — tối ưu hóa cho Web, Tablet và Di động. Đặc biệt hỗ trợ người dùng Việt Nam với ngôn ngữ mẹ đẻ (Tiếng Việt).
-2. Mục tiêu chính
+# 🌊 TopTuna — Ý tưởng, Kiến trúc & Lộ trình
 
-Bảng điều khiển quản trị mạnh mẽ hiển thị dữ liệu thời gian thực về doanh thu, tồn kho, giao hàng và nhân sự.
-Cửa hàng B2B thân thiện (tối ưu di động, đa ngôn ngữ DE/VI/EN, ưu tiên Tiếng Việt).
-Công cụ AI hỗ trợ tiếp thị và sản phẩm (văn bản, ưu đãi cá nhân hóa, dự báo).
-Tích hợp kế toán mượt mà (DATEV, Lexware, Excel) với nhắc nhở tự động.
-Tuân thủ GDPR và các yêu cầu pháp lý EU, bao gồm tính năng bền vững.
+> **Tổng quan**
+> TopTuna là cổng B2B cho bán sỉ hải sản, tập trung vào nhà hàng Việt Nam. Mục tiêu: quản lý, bán hàng và điều phối vận hành (danh mục, đơn hàng, logistics, kế toán/DATEV) — tối ưu cho Web / Tablet / Di động và ưu tiên giao diện tiếng Việt cho người dùng bản xứ.
 
-3. Tính năng chính (MVP → Ưu tiên)
+---
 
-Xác thực & Phân quyền (ADMIN: Toàn quyền, MARKETING, DISPO, DRIVER, ACCOUNTING, CUSTOMER: Lịch sử đơn hàng).  
-Danh mục sản phẩm với giá bậc thang, giao diện PWA với mô tả AI.  
-Giỏ hàng, quy trình đặt hàng, quản lý đơn hàng.  
-Logistics: Lịch trình giao hàng, ứng dụng tài xế với theo dõi GPS, kiểm tra HACCP.  
-Hóa đơn, lưu trữ dòng ghi sổ, xuất dữ liệu DATEV với nhật ký kiểm toán.  
-Bảng điều khiển Admin: Doanh thu, tồn kho, độ chính xác giao hàng, công việc cần làm (cập nhật thời gian thực qua WebSockets).  
-AI: Trình tạo mô tả sản phẩm, đặt hàng thông minh, mẫu tiếp thị, kiểm tra A/B.
+## 🎯 1. Mục tiêu chính (Vision)
 
-4. Kiến trúc tóm tắt
-[Frontend PWA (Angular)]
-  ↕ HTTPS
-[API Gateway (Spring Cloud Gateway)]
-  ↕ REST/gRPC
-[Microservices (Spring Boot) theo ngữ cảnh giới hạn]
+* Bảng điều khiển quản trị mạnh mẽ: số liệu thời gian thực về doanh thu, tồn kho, giao hàng, nhân sự.
+* Cửa hàng B2B thân thiện: PWA, tối ưu di động, hỗ trợ DE / VI / EN (ưu tiên VI).
+* Công cụ AI hỗ trợ marketing & sản phẩm: mô tả tự động, ưu đãi cá nhân hóa, dự báo.
+* Tích hợp kế toán mượt: DATEV / Lexware / Excel, nhắc nhở tự động.
+* Tuân thủ GDPR / quy định EU, thêm tính năng bền vững (ví dụ: tracking CO₂).
+
+---
+
+## 🚀 2. Tính năng chính (MVP — Ưu tiên)
+
+1. **Xác thực & Phân quyền** — Vai trò: `ADMIN`, `MARKETING`, `DISPO`, `DRIVER`, `ACCOUNTING`, `CUSTOMER`.
+2. **Danh mục sản phẩm** — Giá bậc thang, biến thể, media lưu S3/MinIO, mô tả AI.
+3. **Giỏ hàng & Checkout** — Luồng đặt hàng, quản lý trạng thái, hủy/hoàn.
+4. **Logistics cơ bản** — Lịch giao, tour, app tài xế với GPS + HACCP checks.
+5. **Kế toán & Hóa đơn** — PDF hóa đơn, dòng ghi sổ cố định, EXPORT DATEV + audit-log.
+6. **Admin Dashboard** — KPI: doanh thu, tồn kho, độ đúng giờ giao hàng, task realtime (WebSockets).
+7. **AI (cơ bản)** — Generator mô tả, Smart-Reorder, templates marketing, A/B testing.
+
+---
+
+## 🏗️ 3. Kiến trúc tóm tắt (High-level)
+
+```
+[ PWA Frontend (Angular) ]
+           ↕ HTTPS
+[ API Gateway (Spring Cloud Gateway) ]
+           ↕ REST / gRPC
+[ Microservices (Spring Boot) theo Bounded Context ]
   - auth-service (JWT)
   - catalog-service
   - order-service
-  - logistics-service (tích hợp GPS)
+  - logistics-service (GPS)
   - crm-service
   - export-service (DATEV / Lexware / XLSX)
-  - marketing-service (KI-Proxy với ML)
-  ↕
-[Postgres DB(s)] (sản xuất: một DB cho mỗi dịch vụ hoặc instances được quản lý)
-  ↕
-[Object Storage] (Hình ảnh sản phẩm, chứng từ)
-  ↕
-[Giám sát / Chỉ số / Thông báo]
+  - marketing-service (AI-Proxy / ML)
+           ↕
+[ Postgres DB(s) ] (prod: managed hoặc 1 DB/service)
+           ↕
+[ Object Storage ] (Hình ảnh, Chứng từ)
+           ↕
+[ Monitoring / Metrics / Notifications ]
+```
 
-5. Triển khai & Tích hợp liên tục (CI)
+**Ghi chú:** Sử dụng Flyway cho migration, Testcontainers cho integration tests.
 
-CI: GitHub Actions (xây dựng → kiểm tra → triển khai).  
-Sản xuất: Render.com (render.yaml) với thông tin bảo mật (JWT_SECRET, DATABASE_URL).  
-Frontend: Tiêm giá trị API_BASE (URL Gateway) tại thời điểm xây dựng.  
-Cơ sở dữ liệu: Postgres 15/16 (giữ cố định phiên bản chính), Flyway cho di cư dữ liệu.
+---
 
-6. Yêu cầu pháp lý EU (Tóm tắt)
+## ⚙️ 4. Triển khai & CI
 
-GDPR: Giảm thiểu dữ liệu, quy trình xóa dữ liệu, đồng ý cho tiếp thị, cơ chế truy cập/xuất dữ liệu.  
-ePrivacy / Cookies: Banner cookie và quản lý đồng ý cho theo dõi & bản tin.  
-Kế toán/Thuế: Tuân thủ thời hạn (UStVA, v.v.), ghi nhật ký kiểm toán xuất dữ liệu, nhắc nhở tự động.  
-Lưu ý: README này chỉ cung cấp hướng dẫn. Để xử lý pháp lý chính thức, hãy tham khảo ý kiến luật sư chuyên môn hoặc cố vấn thuế.
+* **CI:** GitHub Actions — `build → test → deploy`.
+* **Prod:** Render.com (dùng `render.yaml`), lưu secrets (e.g. `JWT_SECRET`, `DATABASE_URL`) tại Render Secrets.
+* **Frontend:** Inject `API_BASE` (Gateway URL) lúc build; PWA + Service Worker.
+* **DB:** Postgres 15/16 (khóa major version), backup tự động.
+* **Migrations:** Flyway, versioned migrations.
 
+---
 
+## ⚖️ 5. Yêu cầu pháp lý EU (Tóm tắt)
 
-7. Bảo mật & Vận hành (Thiết yếu)
+* **GDPR:** minimization, data deletion flows, consent cho marketing, cơ chế export/access.
+* **ePrivacy / Cookies:** banner & consent management.
+* **Kế toán/Thuế:** tuân thủ deadlines (ví dụ UStVA), audit-log cho exports.
 
-Thông tin bảo mật: Không lưu trong VCS. Sử dụng Render Secrets, K8s Secrets hoặc GitHub Secrets.  
-HTTPS: Áp dụng khắp nơi, HSTS tại Gateway, cấu hình CORS chặt chẽ.  
-JWT: Token ngắn hạn + Làm mới, bảo mật endpoint dựa trên vai trò.  
-Sao lưu: Sao lưu cơ sở dữ liệu hàng ngày, kế hoạch phục hồi thảm họa.  
-Quan sát: Actuator + Prometheus + Grafana + Nhật ký trung tâm.
+> **Lưu ý:** Tài liệu này là hướng dẫn kỹ thuật — hãy hỏi luật sư / tư vấn thuế để có khuyến nghị pháp lý chính thức.
 
-8. Trải nghiệm người dùng & Trợ năng
+---
 
-Thiết kế ưu tiên di động: Tối ưu cho tài xế và chủ nhà hàng (Điện thoại/Tablet).  
-Đa ngôn ngữ: DE/VI/EN với quy trình dịch thuật, ưu tiên Tiếng Việt.  
-WCAG 2.1: Tuân thủ cơ bản (độ tương phản, điều hướng bàn phím, văn bản thay thế).
+## 🔐 6. Bảo mật & Vận hành (Essentials)
 
-9. Tích hợp DATEV / Lexware / Excel
+* **Secrets:** Không commit vào VCS. Dùng Render/K8s/GitHub Secrets.
+* **HTTPS:** Bật HSTS trên Gateway, CORS chặt chẽ.
+* **JWT:** Tokens ngắn hạn + refresh token, RBAC cho endpoints.
+* **Backups:** Daily DB backups + DR plan.
+* **Observability:** Spring Actuator + Prometheus + Grafana + centralized logs (ELK / Loki).
 
-DATEV: Xuất CSV (Windows-1252, dấu chấm phẩy), bảng kiểm toán datev_export.  
-Lexware: Mẫu CSV cho dữ liệu gốc và ghi sổ (nếu cần, thông qua DATEV).  
-Excel: XLSX cho báo cáo thủ công (Apache POI).
+---
 
-10. Lộ trình (Giai đoạn)
-Chi tiết lộ trình phát triển được liệt kê trong todo.md.
-Giai đoạn 0 — Thiết lập (Cơ bản)
+## ♿ 7. UX & Trợ năng
 
-Kho lưu trữ, CI, render.yaml, Docker Compose cục bộ (Postgres), Flyway V1 (Schema).  
-Frontend cơ bản, Gateway, Xác thực.
+* **Mobile-first:** tối ưu cho tài xế & chủ nhà hàng.
+* **Đa ngôn ngữ:** DE / VI / EN — workflow dịch, ưu tiên VI.
+* **WCAG 2.1 (cơ bản):** contrast, keyboard nav, alt-text, form validation.
 
-Giai đoạn 1 — MVP Thương mại & Vận hành
+---
 
-Danh mục, Đơn hàng, Thanh toán, Tạo hóa đơn.  
-Logistics cơ bản (giao hàng, đánh dấu giao hàng bởi tài xế).  
-Xuất DATEV cơ bản, khung bảng điều khiển quản trị.
+## 🧾 8. Tích hợp DATEV / Lexware / Excel
 
-Giai đoạn 2 — Ổn định & Bảo mật
+* **DATEV:** Xuất CSV (Windows-1252, `;`), bảng audit `datev_export`.
+* **Lexware:** CSV templates cho master data & bookings (có thể qua DATEV intermediary).
+* **Excel:** XLSX reports (Apache POI) cho báo cáo thủ công.
 
-RBAC, TLS, xoay vòng thông tin bảo mật, kiểm tra đơn vị/tích hợp, triển khai môi trường staging.  
-Quan sát, sao lưu, tăng cường di cư cơ sở dữ liệu.
+---
 
-Giai đoạn 3 — Tăng trưởng & AI
+## 🗺️ 9. Lộ trình (Phases)
 
-AI: Mô tả sản phẩm, mẫu tiếp thị, khuyến nghị.  
-CMS quản trị, lập lịch, kiểm tra A/B, tự động hóa email/WhatsApp.
+> Chi tiết task → `todo.md`
 
-Giai đoạn 4 — Mở rộng & Tuân thủ
+**Phase 0 — Setup (Cơ bản)**
 
-Hỗ trợ nhiều kho, định tuyến nâng cao, cơ sở dữ liệu sẵn sàng cao, quy trình GDPR chặt chẽ.  
-Tự động hóa thuế (nhắc nhở thời hạn), tích hợp Lexware, quy trình cho kế toán.
+* Repo, CI, `render.yaml`, `docker-compose` local (Postgres), Flyway V1 (schema).
+* Basis frontend, gateway, auth.
 
-11. Phát triển / Cách đóng góp
+**Phase 1 — MVP Commerce & Ops**
 
-Phân nhánh: main = sản xuất, develop = tiền sản xuất, nhánh tính năng feat/*.  
-Định dạng cam kết: TYPE(scope): tóm tắt ngắn + refs todo#<bước> nếu liên quan.  
-Kiểm tra: Đơn vị + Tích hợp (Testcontainers) trong CI.
+* Catalog, Orders, Checkout, Invoice generation.
+* Logistics basic (delivery markers, driver flows).
+* DATEV basic export, admin dashboard scaffold.
 
-12. Theo dõi công việc (tự động qua todo.md)
-Chúng tôi sử dụng todo.md làm nguồn sự thật duy nhất cho các bước phát triển. Sau mỗi bước hoàn thành, chạy cục bộ ./scripts/mark-step-done.sh <SỐ> để đánh dấu bước hoàn thành và cập nhật tiến độ.
-13. Liên hệ & Hỗ trợ
-Nếu có câu hỏi hoặc cần hỗ trợ (ví dụ: di cư dữ liệu, API mẫu, giao diện quản trị, KI-Proxy dưới dạng bản vá), hãy liên hệ với tôi. Vui lòng cho biết giai đoạn hoặc ticket nào bạn muốn ưu tiên!
+**Phase 2 — Stabilize & Security**
+
+* RBAC, TLS, secret rotation, unit/integration tests, staging deploy.
+* Observability, backups, hardened DB migrations.
+
+**Phase 3 — Growth & AI**
+
+* AI: product descriptions, marketing templates, recommendations.
+* Admin CMS, scheduling, A/B tests, E-Mail / WhatsApp automation.
+
+**Phase 4 — Scale & Compliance**
+
+* Multi-warehouse, advanced routing, HA DB, stricter GDPR processes.
+* Tax automation (deadlines reminders), Lexware deeper integration.
+
+---
+
+## 🛠️ 10. Phát triển / Quy tắc đóng góp
+
+* **Branching:** `main` = prod, `develop` = pre-prod, feature `feat/*`.
+* **Commit format:** `TYPE(scope): short summary + refs todo#<step>` khi cần.
+* **Tests:** Unit + Integration (Testcontainers) trong CI pipeline.
+* **Code Style:** Clean code, DTOs + Mapper, versioned API contracts.
+
+---
+
+## ✅ 11. Theo dõi công việc (todo.md)
+
+Sử dụng `todo.md` làm single source of truth. Sau khi hoàn thành step, chạy:
+
+```bash
+./scripts/mark-step-done.sh <SỐ_BƯỚC>
+```
+
+Script sẽ đánh dấu bước là xong và cập nhật tiến độ.
+
+---
+
+## 📞 12. Liên hệ & Bước tiếp theo
+
+Nếu cần giúp (di cư dữ liệu, controller mẫu, UI admin, AI-Proxy patch), hãy cho biết **giai đoạn** hoặc **ticket** bạn muốn ưu tiên — mình có thể tạo ngay: `README.md` đẹp, `todo.md` start list cho Phase 0, và `render.yaml` mẫu cho Render.com.
+
