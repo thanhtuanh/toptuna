@@ -20,8 +20,6 @@ jobs:
       # ------------------------
       # API_BASE (Gateway) setzen
       # ------------------------
-      # Wenn du ein secret API_BASE in GitHub Secrets anlegst, wird dieses verwendet.
-      # Andernfalls wird als Fallback die Gateway-URL verwendet.
       - name: Set API_BASE (from secrets or fallback)
         run: |
           if [ -z "${{ secrets.API_BASE }}" ]; then
@@ -55,11 +53,26 @@ jobs:
       - name: Package backend (skip tests)
         run: mvn -B -DskipTests package
 
-      - name: Set up Node.js 18.x
+      # ------------------------
+      # Frontend: Node setup (monorepo - lockfile in frontend/)
+      # ------------------------
+      - name: Set up Node.js 18.x (frontend)
         uses: actions/setup-node@v4
         with:
           node-version: '18'
           cache: 'npm'
+          # Wichtig: auf die Lockfile im frontend-Ordner zeigen
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Ensure frontend package-lock exists
+        working-directory: ./frontend
+        run: |
+          if [ ! -f package-lock.json ]; then
+            echo "CI: frontend/package-lock.json not found — generating temporarily"
+            npm install --package-lock-only
+          else
+            echo "CI: frontend/package-lock.json present"
+          fi
 
       - name: Cache frontend node_modules (npm)
         uses: actions/cache@v4
@@ -72,8 +85,8 @@ jobs:
             ${{ runner.os }}-node-
 
       - name: Install Frontend Dependencies
-        run: npm ci
         working-directory: ./frontend
+        run: npm ci
 
       # ------------------------
       # API_BASE in env.template ersetzen
@@ -81,7 +94,6 @@ jobs:
       - name: Inject API_BASE into frontend prod env
         working-directory: ${{ github.workspace }}
         run: |
-          # Datei-Pfad: frontend/src/environments/environment.prod.template.ts
           TEMPLATE="frontend/src/environments/environment.prod.template.ts"
           TARGET="frontend/src/environments/environment.prod.ts"
 
@@ -95,8 +107,8 @@ jobs:
           fi
 
       - name: Build Frontend
-        run: npm run build --if-present
         working-directory: ./frontend
+        run: npm run build --if-present
 
   deploy:
     name: Deploy to Render
