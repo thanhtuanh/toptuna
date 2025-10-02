@@ -1,22 +1,31 @@
 <div>
   <header class="header">
-    <a routerLink="/dashboard" class="logo">TopTuna B2B</a>
-    
-    <nav class="nav">
-      <a routerLink="/dashboard">{{ 'nav.dashboard' | translate }}</a>
-      <a routerLink="/catalog">{{ 'nav.catalog' | translate }}</a>
-      <a routerLink="/admin">{{ 'nav.admin' | translate }}</a>
-    </nav>
-    
-    <div class="user-info">
-      <select [value]="currentLang" (change)="switchLang($any($event.target).value)">
-        <option value="de">Deutsch</option>
-        <option value="en">English</option>
-        <option value="vi">Tiếng Việt</option>
-      </select>
-      <button class="btn btn-secondary btn-sm" (click)="logout()">
-        {{ 'nav.logout' | translate }}
-      </button>
+    <div class="header-content">
+      <a routerLink="/admin" class="logo">🐟 TopTuna B2B</a>
+      
+      <nav class="nav" *ngIf="userService.currentUser$ | async as user">
+        <a routerLink="/admin" *ngIf="hasRole(['ADMIN'])">{{ 'nav.dashboard' | translate }}</a>
+        <a routerLink="/catalog" *ngIf="hasRole(['ADMIN', 'MARKETING'])">{{ 'nav.catalog' | translate }}</a>
+        <a routerLink="/sync" *ngIf="hasRole(['ADMIN'])">🔄 Sync</a>
+        <a routerLink="/shop">{{ 'nav.shop' | translate }}</a>
+        <a routerLink="/cart" class="cart-link" *ngIf="userService.currentUser$ | async">
+          {{ 'nav.cart' | translate }}
+          <span class="cart-count" *ngIf="(cartCount$ | async) as count">{{ count }}</span>
+        </a>
+      </nav>
+      
+      <div class="user-info" *ngIf="userService.currentUser$ | async as user">
+        <select [value]="currentLang" (change)="switchLang($any($event.target).value)">
+          <option value="de">🇩🇪 Deutsch</option>
+          <option value="en">🇬🇧 English</option>
+          <option value="vi">🇻🇳 Tiếng Việt</option>
+        </select>
+        <span class="user-name">{{ user.name }}</span>
+        <span class="badge badge-primary">{{ user.role }}</span>
+        <button class="btn btn-secondary btn-sm" (click)="logout()">
+          {{ 'nav.logout' | translate }}
+        </button>
+      </div>
     </div>
   </header>
 

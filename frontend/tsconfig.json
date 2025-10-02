@@ -1,7 +1,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "target": "ES2016",
+    "target": "ES2022",
     "module": "ES2020",
     "lib": ["ES2018", "DOM"],
     "outDir": "./out-tsc",

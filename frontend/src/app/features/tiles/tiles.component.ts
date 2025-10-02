@@ -23,15 +23,15 @@ import { Subscription } from 'rxjs';
       <span>{{ ordersOk ? ('ui.ok'|translate) : ('ui.off'|translate) }}</span>
     </div>
     <div class="tile" [class.ok]="logisticsOk" (click)="open('catalog')">
-      <h4>Logistics</h4>
+      <h4>{{ 'svc.logistics' | translate }}</h4>
       <span>{{ logisticsOk ? ('ui.ok'|translate) : ('ui.off'|translate) }}</span>
     </div>
     <div class="tile" [class.ok]="crmOk" (click)="open('catalog')">
-      <h4>CRM</h4>
+      <h4>{{ 'svc.crm' | translate }}</h4>
       <span>{{ crmOk ? ('ui.ok'|translate) : ('ui.off'|translate) }}</span>
     </div>
     <div class="tile" [class.ok]="exportOk" (click)="open('catalog')">
-      <h4>Export</h4>
+      <h4>{{ 'svc.export' | translate }}</h4>
       <span>{{ exportOk ? ('ui.ok'|translate) : ('ui.off'|translate) }}</span>
     </div>
   </div>

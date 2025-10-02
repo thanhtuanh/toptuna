@@ -1,8 +1,341 @@
 {
   "nav": {
     "dashboard": "Dashboard",
-    "catalog": "Katalog",
+    "catalog": "Katalog", 
+    "shop": "Shop",
+    "cart": "Warenkorb",
     "admin": "Admin",
     "logout": "Abmelden"
+  },
+  "dashboard": {
+    "marketing": {
+      "title": "Marketing Dashboard"
+    },
+    "dispo": {
+      "title": "Disposition Dashboard"
+    },
+    "driver": {
+      "title": "Fahrer Dashboard"
+    },
+    "accounting": {
+      "title": "Buchhaltung Dashboard"
+    },
+    "customer": {
+      "title": "Kunden Dashboard",
+      "orders": "Meine Bestellungen",
+      "profile": "Mein Profil",
+      "ordersCount": "Aktuelle Bestellungen: {{count}}",
+      "profileDesc": "Profildaten verwalten"
+    }
+  },
+  "notifications": {
+    "productUpdated": "Produkt erfolgreich aktualisiert",
+    "productAdded": "Produkt erfolgreich hinzugefügt",
+    "productDeleted": "Produkt erfolgreich gelöscht",
+    "userSaved": "Benutzer gespeichert",
+    "orderSaved": "Bestellung gespeichert",
+    "routeSaved": "Route gespeichert",
+    "customerSaved": "Kunde gespeichert",
+    "exportSaved": "Export gespeichert",
+    "profileSaved": "Profil gespeichert",
+    "invalidSku": "Ungültiges SKU-Format. Verwenden Sie: TT-XXX-XXX-XXX",
+    "updateFailed": "Aktualisierung fehlgeschlagen",
+    "addFailed": "Hinzufügen fehlgeschlagen",
+    "deleteFailed": "Löschen fehlgeschlagen"
+  },
+  "shop": {
+    "title": "Fisch Shop",
+    "subtitle": "Frische Meeresfrüchte für Ihre Küche",
+    "searchPlaceholder": "Produkte suchen...",
+    "filterAll": "Alle",
+    "viewDetails": "Details",
+    "pricePerUnit": "pro {{unit}}",
+    "addToCart": "In Warenkorb",
+    "goToCart": "Zum Warenkorb",
+    "loading": "Produkte werden geladen...",
+    "emptyTitle": "Keine Produkte gefunden",
+    "emptyMessage": "Versuchen Sie eine andere Suche oder Kategorie"
+  },
+  "catalog": {
+    "title": "Produktkatalog",
+    "subtitle": "Alle verfügbaren Produkte",
+    "searchPlaceholder": "Produkte suchen...",
+    "stats": {
+      "products": "Produkte: {{count}}",
+      "categories": "Kategorien: {{count}}"
+    },
+    "table": {
+      "sku": "SKU",
+      "name": "Name",
+      "category": "Kategorie", 
+      "unit": "Einheit",
+      "price": "Preis",
+      "pricePerUnit": "pro {{unit}}"
+    },
+    "empty": {
+      "title": "Keine Produkte gefunden",
+      "message": "Versuchen Sie eine andere Suche"
+    }
+  },
+  "cart": {
+    "title": "Warenkorb",
+    "subtitle": "Ihre ausgewählten Produkte",
+    "summary": {
+      "title": "Zusammenfassung",
+      "items": "Artikel",
+      "total": "Gesamt",
+      "checkout": "Zur Kasse",
+      "clear": "Leeren"
+    },
+    "backToShop": "Zurück zum Shop",
+    "emptyTitle": "Warenkorb ist leer",
+    "emptyMessage": "Fügen Sie Produkte hinzu",
+    "emptyAction": "Zum Shop",
+    "remove": "Entfernen"
+  },
+  "ui": {
+    "loading": "Lädt...",
+    "online": "Online",
+    "offline": "Offline",
+    "edit": "Bearbeiten",
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "delete": "Löschen",
+    "add": "Hinzufügen"
+  },
+  "admin": {
+    "title": "Admin Dashboard",
+    "status": {
+      "healthy": "Online",
+      "down": "Offline"
+    },
+    "services": {
+      "auth": {
+        "title": "Authentifizierung",
+        "users": "Benutzer: {{count}}",
+        "roles": "Rollen & Berechtigungen"
+      },
+      "catalog": {
+        "title": "Katalog",
+        "products": "Produkte: {{count}}",
+        "categories": "Kategorien & Varianten"
+      },
+      "orders": {
+        "title": "Bestellungen",
+        "recent": "Aktuelle: {{count}}",
+        "totalValue": "Gesamtwert: {{value}} €"
+      },
+      "logistics": {
+        "title": "Logistik",
+        "routes": "Routen: {{count}}",
+        "haccp": "HACCP & GPS-Tracking"
+      },
+      "crm": {
+        "title": "CRM",
+        "segments": "Segmente: {{count}}",
+        "customers": "Kunden: {{count}}"
+      },
+      "export": {
+        "title": "Export",
+        "revenue": "Tagesumsatz: {{value}} €",
+        "datev": "DATEV & Lexware"
+      }
+    }
+  }
+}
+    "export": "Export"
+  },
+  "login": {
+    "title": "Anmeldung",
+    "subtitle": "B2B-Portal für Fischgroßhandel",
+    "username": "Benutzername",
+    "password": "Passwort",
+    "login_button": "Einloggen",
+    "demo_users": "Demo-Zugänge",
+    "admin_desc": "Administratorzugang mit voller Kontrolle",
+    "restaurant_desc": "Beispielkunde aus der Gastronomie",
+    "driver_desc": "Fahrerzugang für Logistik",
+    "errors": {
+      "missingCredentials": "Bitte Benutzername und Passwort eingeben",
+      "invalid": "Anmeldung fehlgeschlagen",
+      "server": "Anmeldung fehlgeschlagen. Bitte versuchen Sie es erneut."
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "TopTuna B2B Portal",
+    "status": {
+      "healthy": "ONLINE",
+      "down": "OFFLINE"
+    },
+    "cards": {
+      "catalog": {
+        "title": "Catalog Service",
+        "description": "Produktkatalog mit über 30 Artikeln",
+        "action": "Produkte suchen"
+      }
+    },
+    "demo": {
+      "title": "Katalogdaten",
+      "rawTitle": "Rohdaten"
+    },
+    "errors": {
+      "apiUnavailable": "Service nicht erreichbar",
+      "backendDown": "Backend-Services laufen nicht"
+    }
+  },
+  "catalog": {
+    "title": "Fischkatalog",
+    "subtitle": "Premium Fisch und Meeresfrüchte für Profiküchen",
+    "searchPlaceholder": "Produkte durchsuchen...",
+    "stats": {
+      "products": "{{count}} Produkte",
+      "categories": "{{count}} Kategorien"
+    },
+    "table": {
+      "sku": "SKU",
+      "name": "Produktname",
+      "category": "Kategorie",
+      "unit": "Einheit",
+      "price": "Preis",
+      "pricePerUnit": "Preis pro {{unit}}"
+    },
+    "empty": {
+      "title": "Keine Produkte gefunden",
+      "message": "Versuchen Sie eine andere Suche."
+    }
+  },
+  "admin": {
+    "title": "TopTuna Admin Dashboard",
+    "status": {
+      "healthy": "ONLINE",
+      "down": "OFFLINE"
+    },
+    "services": {
+      "auth": {
+        "title": "Auth Service",
+        "users": "Benutzer: {{count}}",
+        "roles": "Rollen: Admin, Kunde, Fahrer, Disposition"
+      },
+      "catalog": {
+        "title": "Catalog Service",
+        "products": "Produkte: {{count}}",
+        "categories": "Kategorien: Lachs, Thunfisch, Garnelen"
+      },
+      "orders": {
+        "title": "Order Service",
+        "recent": "Aktuelle Bestellungen: {{count}}",
+        "totalValue": "Gesamtwert: {{value}} €"
+      },
+      "logistics": {
+        "title": "Logistics Service",
+        "routes": "Aktive Routen: {{count}}",
+        "haccp": "HACCP-Tracking: Aktiv"
+      },
+      "crm": {
+        "title": "CRM Service",
+        "segments": "Segmente: {{count}}",
+        "customers": "Kunden gesamt: {{count}}"
+      },
+      "export": {
+        "title": "Export Service",
+        "revenue": "Tagesumsatz: {{value}} €",
+        "datev": "DATEV Export: Bereit"
+      }
+    },
+    "catalog": {
+      "title": "Fischkatalog verwalten",
+      "addTitle": "Neues Produkt anlegen",
+      "form": {
+        "sku": "SKU",
+        "nameDe": "Name (Deutsch)",
+        "nameVi": "Name (Vietnamesisch)",
+        "category": "Kategorie",
+        "unit": "Einheit",
+        "price": "Preis in EUR",
+        "submit": "Produkt hinzufügen"
+      },
+      "table": {
+        "sku": "SKU",
+        "nameDe": "Name DE",
+        "nameVi": "Name VI",
+        "category": "Kategorie",
+        "unit": "Einheit",
+        "price": "Preis",
+        "actions": "Aktionen"
+      },
+      "actions": {
+        "edit": "Bearbeiten",
+        "cancel": "Abbrechen",
+        "delete": "Löschen"
+      }
+    },
+    "demo": {
+      "title": "{{service}} Demodaten"
+    }
+  },
+  "marketing": {
+    "insights": "Marketing Insights",
+    "stats": {
+      "totalCustomers": "Kunden gesamt",
+      "vietnamese": "Vietnamesische Restaurants",
+      "avgOrderValue": "Ø Bestellwert",
+      "monthlyGrowth": "Monatswachstum"
+    },
+    "regions": {
+      "title": "Regionale Verteilung",
+      "customers": "{{count}} Kunden"
+    },
+    "recommendations": {
+      "title": "Produktempfehlungen",
+      "confidence": "Vertrauen: {{value}}%"
+    }
+  },
+  "shop": {
+    "title": "Frische Produkte entdecken",
+    "subtitle": "Optimierte PWA für mobile und Tablet-Bestellungen",
+    "searchPlaceholder": "Produkte suchen...",
+    "filterAll": "Alle Kategorien",
+    "viewDetails": "Details",
+    "pricePerUnit": "Preis pro {{unit}}",
+    "addToCart": "In den Warenkorb",
+    "goToCart": "Zum Warenkorb",
+    "loading": "Produkte werden geladen...",
+    "emptyTitle": "Keine Produkte gefunden",
+    "emptyMessage": "Passen Sie Filter oder Suche an."
+  },
+  "product": {
+    "backToList": "Zurück zur Produktliste",
+    "pricePerUnit": "Preis pro {{unit}}",
+    "addToCart": "In den Warenkorb",
+    "viewCart": "Warenkorb anzeigen",
+    "loading": "Produkt wird geladen...",
+    "notFoundTitle": "Produkt nicht gefunden",
+    "notFoundMessage": "Bitte wählen Sie ein anderes Produkt aus.",
+    "highlights": {
+      "title": "Produktdetails",
+      "origin": "Herkunft",
+      "unit": "Verpackung",
+      "allergens": "Allergene"
+    },
+    "notes": {
+      "title": "Hinweise",
+      "empty": "Keine zusätzlichen Hinweise verfügbar."
+    }
+  },
+  "cart": {
+    "title": "Ihr Warenkorb",
+    "subtitle": "Überprüfen Sie Ihre Auswahl und schließen Sie die Bestellung ab",
+    "summary": {
+      "title": "Zusammenfassung",
+      "items": "Positionen",
+      "total": "Gesamt",
+      "checkout": "Zur Kasse",
+      "clear": "Warenkorb leeren"
+    },
+    "backToShop": "Zurück zum Shop",
+    "emptyTitle": "Ihr Warenkorb ist leer",
+    "emptyMessage": "Fügen Sie Produkte hinzu, um eine Bestellung zu starten.",
+    "emptyAction": "Produkte entdecken"
   }
 }

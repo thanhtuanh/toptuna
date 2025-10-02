@@ -1,0 +1,105 @@
+<section class="shop-page" *ngIf="!loading; else loadingBlock">
+  <header class="shop-header">
+    <h1>{{ 'shop.title' | translate }}</h1>
+    <p>{{ 'shop.subtitle' | translate }}</p>
+  </header>
+
+  <div class="shop-controls">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input
+        type="search"
+        [placeholder]="'shop.searchPlaceholder' | translate"
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="onSearch($event)"
+      />
+    </div>
+
+    <div class="category-scroll">
+      <button
+        type="button"
+        class="filter-chip"
+        [ngClass]="{ active: selectedCategory === 'all' }"
+        (click)="selectCategory('all')"
+      >
+        {{ 'shop.filterAll' | translate }}
+      </button>
+      <button
+        type="button"
+        class="filter-chip"
+        *ngFor="let category of categories"
+        [ngClass]="{ active: selectedCategory === category }"
+        (click)="selectCategory(category)"
+      >
+        {{ category }}
+      </button>
+    </div>
+  </div>
+
+  <section *ngIf="filteredProducts.length; else emptyState" class="product-grid">
+    <article
+      class="product-card"
+      *ngFor="let product of filteredProducts; trackBy: trackBySku"
+      [ngClass]="{ highlight: highlightSku() === product.sku }"
+    >
+      <div class="card-header">
+        <span class="badge">{{ product.category }}</span>
+        <button
+          class="details-link"
+          type="button"
+          [routerLink]="['/shop', product.sku]"
+        >
+          {{ 'shop.viewDetails' | translate }} →
+        </button>
+      </div>
+
+      <div class="product-hero">
+        <img 
+          [src]="getProductImage(product)" 
+          [alt]="productName(product)"
+          class="product-thumbnail"
+          loading="lazy"
+        />
+        <div class="sku">{{ product.sku }}</div>
+      </div>
+
+      <h2 class="product-name">{{ productName(product) }}</h2>
+      <p class="origin">{{ product.origin }}</p>
+      <p class="unit">{{ product.unit }}</p>
+
+      <div class="price-row">
+        <span class="price">{{ product.basePriceEur | number:'1.2-2' }} €</span>
+        <span class="price-unit">{{ 'shop.pricePerUnit' | translate:{ unit: product.unit } }}</span>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="btn btn-primary" (click)="addToCart(product)">
+          {{ 'shop.addToCart' | translate }}
+        </button>
+        <a class="btn btn-secondary" [routerLink]="['/cart']">
+          {{ 'shop.goToCart' | translate }}
+        </a>
+      </div>
+    </article>
+  </section>
+</section>
+
+<ng-template #loadingBlock>
+  <div class="loading-state">
+    <div class="spinner"></div>
+    <p>{{ 'shop.loading' | translate }}</p>
+  </div>
+</ng-template>
+
+<ng-template #emptyState>
+  <div class="empty-state">
+    <div class="empty-icon">🐟</div>
+    <h3>{{ 'shop.emptyTitle' | translate }}</h3>
+    <p>{{ 'shop.emptyMessage' | translate }}</p>
+  </div>
+</ng-template>
+
+<a class="cart-fab" [routerLink]="'/cart'">
+  <span class="icon">🛒</span>
+  <span class="count" *ngIf="(cartCount$ | async) as count">{{ count }}</span>
+</a>

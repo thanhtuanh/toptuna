@@ -31,10 +31,10 @@ public class ProductCsvLoader {
     return products.stream().filter(p -> {
       boolean ok = true;
       if (q!=null && !q.isBlank()) {
-        String hay = (p.nameDe()+" "+p.nameEn()+" "+p.nameVi()+" "+p.sku()).toLowerCase();
+        String hay = (p.getNameDe()+" "+p.getNameEn()+" "+p.getNameVi()+" "+p.getSku()).toLowerCase();
         ok &= hay.contains(q.toLowerCase());
       }
-      if (category!=null && !category.isBlank()) ok &= category.equalsIgnoreCase(p.category());
+      if (category!=null && !category.isBlank()) ok &= category.equalsIgnoreCase(p.getCategory());
       return ok;
     }).collect(Collectors.toList());
   }

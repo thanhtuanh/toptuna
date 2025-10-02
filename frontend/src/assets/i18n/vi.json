@@ -2,7 +2,215 @@
   "nav": {
     "dashboard": "Bảng điều khiển",
     "catalog": "Danh mục",
+    "shop": "Cửa hàng",
+    "cart": "Giỏ hàng",
     "admin": "Quản trị",
     "logout": "Đăng xuất"
+  },
+  "ui": {
+    "loading": "Đang tải...",
+    "ok": "Hoạt động",
+    "off": "Tạm ngưng"
+  },
+  "svc": {
+    "auth": "Xác thực",
+    "catalog": "Danh mục",
+    "orders": "Đơn hàng",
+    "logistics": "Vận tải",
+    "crm": "CRM",
+    "export": "Xuất khẩu"
+  },
+  "login": {
+    "title": "Đăng nhập",
+    "subtitle": "Cổng B2B dành cho hải sản cao cấp",
+    "username": "Tên đăng nhập",
+    "password": "Mật khẩu",
+    "login_button": "Đăng nhập",
+    "demo_users": "Tài khoản demo",
+    "admin_desc": "Quyền quản trị đầy đủ tính năng",
+    "restaurant_desc": "Khách hàng mẫu trong ngành F&B",
+    "driver_desc": "Tài xế phục vụ vận chuyển",
+    "errors": {
+      "missingCredentials": "Vui lòng nhập tên đăng nhập và mật khẩu",
+      "invalid": "Đăng nhập không thành công",
+      "server": "Đăng nhập thất bại. Vui lòng thử lại."
+    }
+  },
+  "dashboard": {
+    "title": "Bảng điều khiển",
+    "subtitle": "Cổng TopTuna B2B",
+    "status": {
+      "healthy": "HOẠT ĐỘNG",
+      "down": "NGỪNG"
+    },
+    "cards": {
+      "catalog": {
+        "title": "Dịch vụ danh mục",
+        "description": "Kho sản phẩm với hơn 30 mặt hàng",
+        "action": "Tìm sản phẩm"
+      }
+    },
+    "demo": {
+      "title": "Dữ liệu danh mục",
+      "rawTitle": "Dữ liệu thô"
+    },
+    "errors": {
+      "apiUnavailable": "Không thể kết nối dịch vụ",
+      "backendDown": "Dịch vụ backend chưa khởi chạy"
+    }
+  },
+  "catalog": {
+    "title": "Danh mục hải sản",
+    "subtitle": "Nguồn cá và hải sản cao cấp cho bếp chuyên nghiệp",
+    "searchPlaceholder": "Tìm kiếm sản phẩm...",
+    "stats": {
+      "products": "{{count}} sản phẩm",
+      "categories": "{{count}} danh mục"
+    },
+    "table": {
+      "sku": "SKU",
+      "name": "Tên sản phẩm",
+      "category": "Danh mục",
+      "unit": "Đơn vị",
+      "price": "Giá",
+      "pricePerUnit": "Giá cho {{unit}}"
+    },
+    "empty": {
+      "title": "Không tìm thấy sản phẩm",
+      "message": "Hãy thử thay đổi từ khóa."
+    }
+  },
+  "admin": {
+    "title": "Bảng điều khiển quản trị TopTuna",
+    "status": {
+      "healthy": "HOẠT ĐỘNG",
+      "down": "NGỪNG"
+    },
+    "services": {
+      "auth": {
+        "title": "Dịch vụ xác thực",
+        "users": "Người dùng: {{count}}",
+        "roles": "Vai trò: Admin, Khách hàng, Tài xế, Điều phối"
+      },
+      "catalog": {
+        "title": "Dịch vụ danh mục",
+        "products": "Sản phẩm: {{count}}",
+        "categories": "Danh mục: Cá hồi, Cá ngừ, Tôm"
+      },
+      "orders": {
+        "title": "Dịch vụ đơn hàng",
+        "recent": "Đơn gần đây: {{count}}",
+        "totalValue": "Tổng giá trị: {{value}} €"
+      },
+      "logistics": {
+        "title": "Dịch vụ vận tải",
+        "routes": "Tuyến hoạt động: {{count}}",
+        "haccp": "Theo dõi HACCP: Bật"
+      },
+      "crm": {
+        "title": "Dịch vụ CRM",
+        "segments": "Phân khúc: {{count}}",
+        "customers": "Khách hàng: {{count}}"
+      },
+      "export": {
+        "title": "Dịch vụ xuất khẩu",
+        "revenue": "Doanh thu trong ngày: {{value}} €",
+        "datev": "Xuất DATEV: Sẵn sàng"
+      }
+    },
+    "catalog": {
+      "title": "Quản lý danh mục hải sản",
+      "addTitle": "Thêm sản phẩm mới",
+      "form": {
+        "sku": "SKU",
+        "nameDe": "Tên (Đức)",
+        "nameVi": "Tên (Việt)",
+        "category": "Danh mục",
+        "unit": "Đơn vị",
+        "price": "Giá EUR",
+        "submit": "Thêm sản phẩm"
+      },
+      "table": {
+        "sku": "SKU",
+        "nameDe": "Tên DE",
+        "nameVi": "Tên VI",
+        "category": "Danh mục",
+        "unit": "Đơn vị",
+        "price": "Giá",
+        "actions": "Thao tác"
+      },
+      "actions": {
+        "edit": "Chỉnh sửa",
+        "cancel": "Hủy",
+        "delete": "Xóa"
+      }
+    },
+    "demo": {
+      "title": "Dữ liệu demo {{service}}"
+    }
+  },
+  "marketing": {
+    "insights": "Số liệu marketing",
+    "stats": {
+      "totalCustomers": "Tổng khách hàng",
+      "vietnamese": "Nhà hàng Việt Nam",
+      "avgOrderValue": "Giá trị đơn trung bình",
+      "monthlyGrowth": "Tăng trưởng tháng"
+    },
+    "regions": {
+      "title": "Phân bố vùng miền",
+      "customers": "{{count}} khách hàng"
+    },
+    "recommendations": {
+      "title": "Gợi ý sản phẩm",
+      "confidence": "Độ tin cậy: {{value}}%"
+    }
+  },
+  "shop": {
+    "title": "Khám phá hải sản tươi ngon",
+    "subtitle": "Trải nghiệm đặt hàng PWA tối ưu cho di động và máy tính bảng",
+    "searchPlaceholder": "Tìm kiếm sản phẩm...",
+    "filterAll": "Tất cả danh mục",
+    "viewDetails": "Chi tiết",
+    "pricePerUnit": "giá cho {{unit}}",
+    "addToCart": "Thêm vào giỏ",
+    "goToCart": "Đến giỏ hàng",
+    "loading": "Đang tải sản phẩm...",
+    "emptyTitle": "Không tìm thấy sản phẩm",
+    "emptyMessage": "Hãy điều chỉnh bộ lọc hoặc từ khóa tìm kiếm."
+  },
+  "product": {
+    "backToList": "Quay lại danh sách sản phẩm",
+    "pricePerUnit": "giá cho {{unit}}",
+    "addToCart": "Thêm vào giỏ",
+    "viewCart": "Xem giỏ hàng",
+    "loading": "Đang tải sản phẩm...",
+    "notFoundTitle": "Không tìm thấy sản phẩm",
+    "notFoundMessage": "Sản phẩm bạn chọn hiện không khả dụng.",
+    "highlights": {
+      "title": "Thông tin chính",
+      "origin": "Xuất xứ",
+      "unit": "Đơn vị",
+      "allergens": "Dị ứng"
+    },
+    "notes": {
+      "title": "Ghi chú",
+      "empty": "Chưa có ghi chú bổ sung."
+    }
+  },
+  "cart": {
+    "title": "Giỏ hàng của bạn",
+    "subtitle": "Kiểm tra đơn trước khi hoàn tất",
+    "summary": {
+      "title": "Tóm tắt",
+      "items": "Mặt hàng",
+      "total": "Tổng cộng",
+      "checkout": "Tiến hành đặt hàng",
+      "clear": "Xóa giỏ hàng"
+    },
+    "backToShop": "Quay lại cửa hàng",
+    "emptyTitle": "Giỏ hàng đang trống",
+    "emptyMessage": "Hãy thêm sản phẩm để bắt đầu đơn.",
+    "emptyAction": "Khám phá sản phẩm"
   }
 }

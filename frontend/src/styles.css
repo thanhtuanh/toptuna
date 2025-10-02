@@ -1,388 +1,243 @@
-/* TopTuna.de Professional Styling */
-:root {
-  --wp--preset--color--primary: #1e3a8a;
-  --wp--preset--color--secondary: #3b82f6;
-  --wp--preset--color--background: #ffffff;
-  --wp--preset--color--foreground: #1f2937;
-  --wp--preset--color--accent: #dbeafe;
-  --wp--preset--color--surface: #f8fafc;
-  --wp--preset--color--border: #e5e7eb;
-  --wp--preset--color--success: #10b981;
-  --wp--preset--color--warning: #f59e0b;
-  --wp--preset--color--error: #ef4444;
-  --wc-red: #a00;
+/* === TopTuna Design Tokens === */
+:root{
+  /* Farben */
+  --tt-bg:#ffffff;
+  --tt-text:#0f172a;
+  --tt-muted:#475569;
+  --tt-primary:#0ea5e9;        /* Ocean Blue */
+  --tt-primary-700:#0284c7;
+  --tt-accent:#fb7185;         /* Lachs-Akzent */
+  --tt-surface:#f8fafc;
+  --tt-border:#e2e8f0;
+
+  /* Typografie / Radius / Abstände */
+  --tt-font-sans:"Inter","Roboto",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  --tt-radius:14px;
+  --tt-shadow:0 8px 24px rgba(2,132,199,.08);
+  --tt-space-1:.5rem;
+  --tt-space-2:1rem;
+  --tt-space-3:1.5rem;
+  --tt-space-4:2rem;
+  --tt-max-width:1120px;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--tt-bg);color:var(--tt-text);font-family:var(--tt-font-sans);line-height:1.6}
 
-body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background-color: var(--wp--preset--color--background);
-  color: var(--wp--preset--color--foreground);
-  line-height: 1.6;
-}
+/* Layout */
+.container{max-width:var(--tt-max-width);margin:0 auto;padding:0 var(--tt-space-2)}
+.section{padding:clamp(3rem,6vw,6rem) 0;background:var(--tt-bg)}
+.section.alt{background:var(--tt-surface)}
 
-/* Header */
+h1,h2,h3{line-height:1.2;margin:0 0 var(--tt-space-2)}
+h1{font-size:clamp(2rem,4vw,3rem);font-weight:800}
+h2{font-size:clamp(1.5rem,3vw,2.25rem);font-weight:700}
+h3{font-size:clamp(1.25rem,2.2vw,1.5rem);font-weight:700;color:var(--tt-muted)}
+p{margin:0 0 var(--tt-space-2);color:#1f2937}
+a{color:var(--tt-primary);text-decoration:none}
+a:hover{color:var(--tt-primary-700);text-decoration:underline}
+
+/* Navbar */
+.navbar{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--tt-border)}
+.navbar .inner{display:flex;align-items:center;justify-content:space-between;padding:.75rem 0}
+.navbar .brand{font-weight:800;letter-spacing:.2px}
+.navbar .menu{display:flex;gap:1rem}
+.navbar .menu a{padding:.5rem .75rem;border-radius:10px}
+.navbar .menu a:hover{background:var(--tt-surface)}
+
+/* Hero */
+.hero{
+  background: radial-gradient(1200px 600px at 80% -20%, rgba(14,165,233,.12), transparent),
+              linear-gradient(180deg,#ffffff 0%,#f6fbff 100%);
+  padding:clamp(3rem,6vw,6rem) 0;
+}
+.hero .title{margin-bottom:var(--tt-space-2)}
+.hero .lead{font-size:clamp(1.05rem,2vw,1.25rem);color:var(--tt-muted)}
+.hero .cta{margin-top:var(--tt-space-3);display:flex;gap:1rem;flex-wrap:wrap}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.1rem;border-radius:999px;
+     font-weight:700;border:1px solid transparent;transition:.2s ease}
+.btn-primary{background:var(--tt-primary);color:#fff}
+.btn-primary:hover{background:var(--tt-primary-700)}
+.btn-outline{background:#fff;color:var(--tt-primary);border-color:var(--tt-primary)}
+.btn-outline:hover{background:rgba(14,165,233,.08)}
+
+/* Cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:var(--tt-space-3)}
+.card{background:#fff;border:1px solid var(--tt-border);border-radius:var(--tt-radius);
+      padding:var(--tt-space-3);box-shadow:var(--tt-shadow)}
+.card h3{margin-bottom:.5rem;color:var(--tt-text)}
+.card p{color:#334155}
+
+/* Badges */
+.badge{display:inline-block;padding:.3rem .6rem;border-radius:999px;font-size:.8rem;
+       background:rgba(251,113,133,.12);color:var(--tt-accent);font-weight:700}
+
+/* Formulare */
+input,select,textarea{
+  width:100%;padding:.75rem;border:1px solid var(--tt-border);border-radius:12px;font:inherit;
+  outline:none;transition:border-color .15s ease
+}
+input:focus,select:focus,textarea:focus{border-color:var(--tt-primary);box-shadow:0 0 0 3px rgba(14,165,233,.15)}
+
+/* Header - TopTuna Style */
 .header {
-  background-color: var(--wp--preset--color--background);
-  border-bottom: 1px solid var(--wp--preset--color--border);
-  padding: 1rem 2rem;
+  background: linear-gradient(135deg, var(--tt-primary) 0%, var(--tt-primary-700) 100%);
+  color: var(--tt-bg);
+  padding: var(--tt-space-2) 0;
+  box-shadow: var(--tt-shadow);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-content {
+  max-width: var(--tt-max-width);
+  margin: 0 auto;
+  padding: 0 var(--tt-space-2);
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--tt-space-2);
 }
 
 .logo {
   font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--wp--preset--color--primary);
+  font-weight: 800;
+  color: var(--tt-bg);
   text-decoration: none;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--tt-space-1);
 }
 
-.logo::before {
-  content: "🐟";
-  font-size: 1.8rem;
+.logo:hover {
+  color: var(--tt-accent);
 }
 
+/* Navigation */
 .nav {
   display: flex;
-  gap: 2rem;
+  gap: var(--tt-space-1);
+  flex-wrap: wrap;
 }
 
 .nav a {
-  color: var(--text-secondary);
+  color: var(--tt-bg);
   text-decoration: none;
+  padding: var(--tt-space-1) var(--tt-space-2);
+  border-radius: var(--tt-radius);
   font-weight: 500;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
   transition: all 0.2s;
+  white-space: nowrap;
 }
 
-.nav a:hover, .nav a.active {
-  color: var(--primary-blue);
-  background: var(--light-blue);
+.nav a:hover {
+  background: rgba(255,255,255,0.1);
+  color: var(--tt-accent);
+}
+
+.cart-link {
+  position: relative;
+}
+
+.cart-count {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: var(--tt-accent);
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .user-info {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: var(--tt-space-2);
+  flex-wrap: wrap;
+}
+
+.user-name {
+  color: var(--tt-bg);
+  font-weight: 500;
+  font-size: 0.9rem;
 }
 
 .user-info select {
-  padding: 0.5rem;
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
-  background: var(--white);
-  color: var(--text-primary);
+  background: rgba(255,255,255,0.1);
+  color: var(--tt-bg);
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: var(--tt-space-1);
+  border-radius: 8px;
+  font-size: 0.9rem;
 }
 
-/* Buttons */
-.btn {
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 0.5rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-  text-decoration: none;
-  display: inline-block;
-  text-align: center;
-}
+/* Grid System - Performance Optimized */
+.grid{display:grid;gap:var(--tt-space-3)}
+.grid-cols-1{grid-template-columns:1fr}
+.grid-cols-2{grid-template-columns:repeat(2,1fr)}
+.grid-cols-3{grid-template-columns:repeat(3,1fr)}
+.grid-cols-4{grid-template-columns:repeat(4,1fr)}
 
-.btn-primary {
-  background-color: var(--wp--preset--color--primary) !important;
-  color: var(--wp--preset--color--background);
-}
+/* Form Elements */
+.form-group{margin-bottom:var(--tt-space-3)}
+.form-label{display:block;margin-bottom:var(--tt-space-1);font-weight:500;color:var(--tt-text)}
 
-.btn-primary:hover {
-  background: var(--dark-blue);
-}
+/* Performance: Reduce repaints */
+.btn,.card{will-change:transform}
+.btn:hover{transform:translateY(-1px)}
+.card:hover{transform:translateY(-2px)}
 
-.btn-secondary {
-  background: var(--surface);
-  color: var(--text-primary);
-  border: 1px solid var(--border);
-}
-
-.btn-secondary:hover {
-  background: var(--border);
-}
-
-.btn-sm {
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
-}
-
-/* Container */
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
-}
-
-/* Service Cards */
-.services-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 1.5rem;
-  margin: 2rem 0;
-}
-
-.service-card {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: 1rem;
-  padding: 1.5rem;
-  cursor: pointer;
-  transition: all 0.3s;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.service-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  border-color: var(--secondary-blue);
-}
-
-.service-card.healthy {
-  border-color: var(--success);
-  background: linear-gradient(135deg, var(--white) 0%, #f0fdf4 100%);
-}
-
-.service-header {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-.service-icon {
-  width: 3rem;
-  height: 3rem;
-  border-radius: 0.75rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-}
-
-.service-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: 0.25rem;
-}
-
-.service-status {
-  font-size: 0.875rem;
-  font-weight: 500;
-  padding: 0.25rem 0.75rem;
-  border-radius: 1rem;
-}
-
-.status-healthy {
-  background: #dcfce7;
-  color: #166534;
-}
-
-.service-description {
-  color: var(--text-secondary);
-  margin-bottom: 1rem;
-}
-
-/* Tables */
-.catalog-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: var(--white);
-  border-radius: 0.75rem;
-  overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  margin-top: 1rem;
-}
-
-.catalog-table th {
-  background: var(--primary-blue);
-  color: var(--white);
-  padding: 1rem;
-  text-align: left;
-  font-weight: 600;
-  font-size: 0.875rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.catalog-table td {
-  padding: 1rem;
-  border-bottom: 1px solid var(--border);
-  vertical-align: middle;
-}
-
-.catalog-table tr:hover {
-  background: var(--surface);
-}
-
-.catalog-table input {
-  width: 100%;
-  border: 1px solid var(--border);
-  border-radius: 0.375rem;
-  padding: 0.5rem;
-  font-size: 0.875rem;
-}
-
-.catalog-table input:focus {
-  outline: none;
-  border-color: var(--secondary-blue);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-/* Forms */
-.add-product {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: 0.75rem;
-  padding: 1.5rem;
-  margin-bottom: 2rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.add-product h4 {
-  color: var(--primary-blue);
-  margin-bottom: 1rem;
-  font-size: 1.125rem;
-}
-
-.add-product form {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-  align-items: end;
-}
-
-.add-product input {
-  padding: 0.75rem;
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
-  font-size: 0.875rem;
-}
-
-.add-product input:focus {
-  outline: none;
-  border-color: var(--secondary-blue);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-/* Delete Button */
-.delete-btn {
-  background: var(--wc-red);
-  color: var(--wp--preset--color--background);
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 0.375rem;
-  cursor: pointer;
-  font-size: 0.875rem;
-  margin-left: 0.5rem;
-}
-
-.delete-btn:hover {
-  background: #800;
-}
-
-/* Demo Section */
-.demo-section, .demo-data, .catalog-admin {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: 0.75rem;
-  padding: 1.5rem;
-  margin-top: 2rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.demo-title {
-  color: var(--primary-blue);
-  margin-bottom: 1rem;
-  font-size: 1.25rem;
-}
-
-pre {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
-  padding: 1rem;
-  overflow-x: auto;
-  font-size: 0.875rem;
-  color: var(--text-secondary);
-}
-
-/* Page Titles */
-.page-title {
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--primary-blue);
-  margin-bottom: 0.5rem;
-}
-
-.page-subtitle {
-  color: var(--text-secondary);
-  font-size: 1.125rem;
-  margin-bottom: 2rem;
-}
-
-/* Responsive */
+/* Responsive - Mobile First */
 @media (max-width: 768px) {
-  .header {
-    flex-direction: column;
-    gap: 1rem;
-    padding: 1rem;
-  }
-  
-  .nav {
-    gap: 1rem;
-  }
-  
-  .container {
-    padding: 1rem;
-  }
-  
-  .services-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .add-product form {
-    grid-template-columns: 1fr;
-  }
+  .header-content{flex-direction:column;text-align:center}
+  .nav{justify-content:center;width:100%}
+  .nav a{padding:var(--tt-space-2);font-size:.9rem}
+  .container{padding:var(--tt-space-2) var(--tt-space-1)}
+  .grid-cols-2,.grid-cols-3,.grid-cols-4{grid-template-columns:1fr}
+  .btn{width:100%;justify-content:center}
+  .card{margin:0 var(--tt-space-1)}
 }
 
-/* Animations */
-.fade-in {
-  animation: fadeIn 0.5s ease-in;
+@media (min-width: 769px) and (max-width: 1024px) {
+  .grid-cols-3,.grid-cols-4{grid-template-columns:repeat(2,1fr)}
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+/* Utility Classes - Minimal */
+.text-center{text-align:center}
+.text-primary{color:var(--tt-primary)}
+.text-accent{color:var(--tt-accent)}
+.text-muted{color:var(--tt-muted)}
+.bg-surface{background:var(--tt-surface)}
+.mb-2{margin-bottom:var(--tt-space-2)}
+.mt-2{margin-top:var(--tt-space-2)}
+.p-3{padding:var(--tt-space-3)}
+.rounded{border-radius:var(--tt-radius)}
+.shadow{box-shadow:var(--tt-shadow)}
 
-/* Loading States */
-.loading {
-  display: inline-block;
-  width: 1rem;
-  height: 1rem;
-  border: 2px solid var(--border);
-  border-radius: 50%;
-  border-top-color: var(--primary-blue);
-  animation: spin 1s ease-in-out infinite;
-}
+/* Loading States - Performance */
+.loading{opacity:.6;pointer-events:none}
+.spinner{display:inline-block;width:20px;height:20px;border:2px solid #f3f3f3;
+         border-top:2px solid var(--tt-primary);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
+/* Vietnamese Text */
+.text-vi{font-style:italic;color:var(--tt-accent);font-weight:500}
+
+/* Footer */
+.footer{background:#0b1220;color:#cbd5e1;padding:3rem 0;margin-top:2rem}
+.footer a{color:#93c5fd}
+.footer a:hover{color:#bfdbfe}
+
+/* Performance: Reduce layout thrashing */
+*{transform:translateZ(0)}
+img{max-width:100%;height:auto}

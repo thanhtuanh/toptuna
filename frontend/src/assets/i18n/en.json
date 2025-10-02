@@ -2,7 +2,215 @@
   "nav": {
     "dashboard": "Dashboard",
     "catalog": "Catalog",
+    "shop": "Shop",
+    "cart": "Cart",
     "admin": "Admin",
     "logout": "Logout"
+  },
+  "ui": {
+    "loading": "Loading...",
+    "ok": "Online",
+    "off": "Offline"
+  },
+  "svc": {
+    "auth": "Authentication",
+    "catalog": "Catalog",
+    "orders": "Orders",
+    "logistics": "Logistics",
+    "crm": "CRM",
+    "export": "Export"
+  },
+  "login": {
+    "title": "Sign In",
+    "subtitle": "B2B portal for premium seafood",
+    "username": "Username",
+    "password": "Password",
+    "login_button": "Login",
+    "demo_users": "Demo accounts",
+    "admin_desc": "Administrator access with full control",
+    "restaurant_desc": "Sample customer from hospitality",
+    "driver_desc": "Driver access for logistics",
+    "errors": {
+      "missingCredentials": "Please provide username and password",
+      "invalid": "Login failed",
+      "server": "Login failed. Please try again."
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "TopTuna B2B Portal",
+    "status": {
+      "healthy": "ONLINE",
+      "down": "OFFLINE"
+    },
+    "cards": {
+      "catalog": {
+        "title": "Catalog Service",
+        "description": "Product catalog with 30+ items",
+        "action": "Search products"
+      }
+    },
+    "demo": {
+      "title": "Catalog data",
+      "rawTitle": "Raw data"
+    },
+    "errors": {
+      "apiUnavailable": "Service unavailable",
+      "backendDown": "Backend services are not running"
+    }
+  },
+  "catalog": {
+    "title": "Seafood catalog",
+    "subtitle": "Premium fish and seafood for professional kitchens",
+    "searchPlaceholder": "Search products...",
+    "stats": {
+      "products": "{{count}} products",
+      "categories": "{{count}} categories"
+    },
+    "table": {
+      "sku": "SKU",
+      "name": "Product name",
+      "category": "Category",
+      "unit": "Unit",
+      "price": "Price",
+      "pricePerUnit": "Price per {{unit}}"
+    },
+    "empty": {
+      "title": "No products found",
+      "message": "Try a different search."
+    }
+  },
+  "admin": {
+    "title": "TopTuna Admin Dashboard",
+    "status": {
+      "healthy": "ONLINE",
+      "down": "OFFLINE"
+    },
+    "services": {
+      "auth": {
+        "title": "Auth Service",
+        "users": "Users: {{count}}",
+        "roles": "Roles: Admin, Customer, Driver, Dispatcher"
+      },
+      "catalog": {
+        "title": "Catalog Service",
+        "products": "Products: {{count}}",
+        "categories": "Categories: Salmon, Tuna, Shrimp"
+      },
+      "orders": {
+        "title": "Order Service",
+        "recent": "Recent orders: {{count}}",
+        "totalValue": "Total value: {{value}} €"
+      },
+      "logistics": {
+        "title": "Logistics Service",
+        "routes": "Active routes: {{count}}",
+        "haccp": "HACCP tracking: Enabled"
+      },
+      "crm": {
+        "title": "CRM Service",
+        "segments": "Segments: {{count}}",
+        "customers": "Customers: {{count}}"
+      },
+      "export": {
+        "title": "Export Service",
+        "revenue": "Daily revenue: {{value}} €",
+        "datev": "DATEV export: Ready"
+      }
+    },
+    "catalog": {
+      "title": "Manage seafood catalog",
+      "addTitle": "Add new product",
+      "form": {
+        "sku": "SKU",
+        "nameDe": "Name (German)",
+        "nameVi": "Name (Vietnamese)",
+        "category": "Category",
+        "unit": "Unit",
+        "price": "Price in EUR",
+        "submit": "Add product"
+      },
+      "table": {
+        "sku": "SKU",
+        "nameDe": "Name DE",
+        "nameVi": "Name VI",
+        "category": "Category",
+        "unit": "Unit",
+        "price": "Price",
+        "actions": "Actions"
+      },
+      "actions": {
+        "edit": "Edit",
+        "cancel": "Cancel",
+        "delete": "Delete"
+      }
+    },
+    "demo": {
+      "title": "{{service}} demo data"
+    }
+  },
+  "marketing": {
+    "insights": "Marketing insights",
+    "stats": {
+      "totalCustomers": "Total customers",
+      "vietnamese": "Vietnamese restaurants",
+      "avgOrderValue": "Average order value",
+      "monthlyGrowth": "Monthly growth"
+    },
+    "regions": {
+      "title": "Regional distribution",
+      "customers": "{{count}} customers"
+    },
+    "recommendations": {
+      "title": "Product recommendations",
+      "confidence": "Confidence: {{value}}%"
+    }
+  },
+  "shop": {
+    "title": "Discover fresh seafood",
+    "subtitle": "Responsive PWA ordering experience for mobile and tablet",
+    "searchPlaceholder": "Search products...",
+    "filterAll": "All categories",
+    "viewDetails": "Details",
+    "pricePerUnit": "per {{unit}}",
+    "addToCart": "Add to cart",
+    "goToCart": "Go to cart",
+    "loading": "Loading products...",
+    "emptyTitle": "No products found",
+    "emptyMessage": "Try adjusting your filters or search query."
+  },
+  "product": {
+    "backToList": "Back to product list",
+    "pricePerUnit": "per {{unit}}",
+    "addToCart": "Add to cart",
+    "viewCart": "View cart",
+    "loading": "Loading product...",
+    "notFoundTitle": "Product not found",
+    "notFoundMessage": "The requested product is unavailable.",
+    "highlights": {
+      "title": "Key details",
+      "origin": "Origin",
+      "unit": "Unit",
+      "allergens": "Allergens"
+    },
+    "notes": {
+      "title": "Chef notes",
+      "empty": "No additional notes available."
+    }
+  },
+  "cart": {
+    "title": "Your cart",
+    "subtitle": "Review your selection before checkout",
+    "summary": {
+      "title": "Summary",
+      "items": "Items",
+      "total": "Total",
+      "checkout": "Proceed to checkout",
+      "clear": "Clear cart"
+    },
+    "backToShop": "Back to shop",
+    "emptyTitle": "Your cart is empty",
+    "emptyMessage": "Add items to start an order.",
+    "emptyAction": "Browse products"
   }
 }

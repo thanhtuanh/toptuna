@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { API_BASE } from './api.config';
-import { UserService } from './user.service';
+import { UserService, User } from './user.service';
 
 export interface LoginRequest {
   username: string;
@@ -31,7 +31,16 @@ export class AuthService {
       .pipe(
         tap(response => {
           localStorage.setItem('toptuna_token', response.token);
-          this.userService.setUser(response.user);
+          // Convert response to User interface
+          const user: User = {
+            id: '1',
+            username: response.user.username,
+            email: `${response.user.username}@toptuna.de`,
+            role: response.user.role as any,
+            name: response.user.name,
+            permissions: response.user.role === 'ADMIN' ? ['ALL'] : ['BASIC']
+          };
+          this.userService.setUser(user);
         })
       );
   }

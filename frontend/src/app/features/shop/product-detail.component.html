@@ -1,0 +1,94 @@
+<section class="detail-page" *ngIf="!loading && product; else loadingBlock">
+  <nav class="detail-breadcrumb">
+    <a routerLink="/shop">← {{ 'product.backToList' | translate }}</a>
+  </nav>
+
+  <div class="detail-hero">
+    <div class="hero-visual">
+      <img 
+        [src]="getProductImage(product)" 
+        [alt]="productName(product)"
+        class="hero-image"
+        loading="lazy"
+      />
+      <span class="sku">{{ product.sku }}</span>
+    </div>
+    <div class="hero-body">
+      <span class="category">{{ product.category }}</span>
+      <h1>{{ productName(product) }}</h1>
+      <div class="product-status">
+        <span class="status-fresh">🐟 Frisch</span>
+        <span class="status-available">✅ Verfügbar</span>
+      </div>
+      <p class="estimated-weight" *ngIf="product.estimatedWeight">
+        geschätztes Gewicht: {{ product.estimatedWeight }}
+      </p>
+
+      <div class="price-tiers" *ngIf="product.priceTiers && objectKeys(product.priceTiers).length > 0">
+        <div class="price-tier" *ngFor="let tier of objectKeys(product.priceTiers)">
+          <span class="tier-label">Preis für typ {{ tier }}:</span>
+          <span class="tier-price">{{ product.priceTiers[tier] | number:'1.2-2' }} €/kg</span>
+        </div>
+      </div>
+
+      <div class="price-block" *ngIf="!product.priceTiers || objectKeys(product.priceTiers).length === 0">
+        <span class="price">{{ product.basePriceEur | number:'1.2-2' }} €</span>
+        <small>{{ 'product.pricePerUnit' | translate:{ unit: product.unit } }}</small>
+      </div>
+
+      <p class="origin"><strong>Herkunft:</strong> {{ product.origin }}</p>
+
+      <div class="quantity-selector">
+        <button type="button" (click)="decrease()">−</button>
+        <span>{{ quantity }}</span>
+        <button type="button" (click)="increase()">+</button>
+      </div>
+
+      <div class="cta-row">
+        <button class="btn btn-primary" type="button" (click)="addToCart()">
+          {{ 'product.addToCart' | translate }}
+        </button>
+        <a class="btn btn-secondary" routerLink="/cart">
+          {{ 'product.viewCart' | translate }}
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <section class="detail-content">
+    <div class="info-card">
+      <h2>{{ 'product.highlights.title' | translate }}</h2>
+      <ul>
+        <li>
+          <strong>{{ 'product.highlights.origin' | translate }}:</strong>
+          <span>{{ product.origin }}</span>
+        </li>
+        <li>
+          <strong>{{ 'product.highlights.unit' | translate }}:</strong>
+          <span>{{ product.unit }}</span>
+        </li>
+        <li>
+          <strong>{{ 'product.highlights.allergens' | translate }}:</strong>
+          <span>{{ product.allergens || '–' }}</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="info-card">
+      <h2>{{ 'product.notes.title' | translate }}</h2>
+      <p>{{ product.notes || ('product.notes.empty' | translate) }}</p>
+    </div>
+  </section>
+</section>
+
+<ng-template #loadingBlock>
+  <div class="loading-state" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>{{ 'product.loading' | translate }}</p>
+  </div>
+  <div class="empty-state" *ngIf="!loading && notFound">
+    <h3>{{ 'product.notFoundTitle' | translate }}</h3>
+    <p>{{ 'product.notFoundMessage' | translate }}</p>
+    <a routerLink="/shop" class="btn btn-primary">{{ 'product.backToList' | translate }}</a>
+  </div>
+</ng-template>

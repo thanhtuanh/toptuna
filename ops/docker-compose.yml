@@ -1,6 +1,4 @@
 # ops/docker-compose.yml (angepasst)
-version: "3.8"
-
 services:
   frontend:
     build:
@@ -12,7 +10,7 @@ services:
     depends_on:
       - gateway
     env_file:
-      - ../.env
+      - .env
 
   gateway:
     build:
@@ -22,7 +20,7 @@ services:
         SERVICE_DIR: gateway
     image: ops-gateway:latest
     env_file:
-      - ../.env  # Lädt .env aus dem Projekt-Root
+      - .env
     ports:
       - "8080:8080"
     environment:
@@ -35,7 +33,6 @@ services:
       - LOGISTICS_URL=http://logistics:8084
       - CRM_URL=http://crm:8085
       - EXPORT_URL=http://export:8086
-      # Optional: Gateway möchte ggf. Tokens prüfen -> secret weitergeben (nur lokal/test)
       - JWT_SECRET=${JWT_SECRET}
       - JWT_EXPIRATION_MS=${JWT_EXPIRATION_MS}
       - JWT_REFRESH_EXPIRATION_MS=${JWT_REFRESH_EXPIRATION_MS}
@@ -61,10 +58,9 @@ services:
         SERVICE_DIR: auth-service
     image: ops-auth:latest
     env_file:
-      - ../.env
+      - .env
     environment:
       - SERVER_PORT=8081
-      # Wichtig: JWT_SECRET in den Container übergeben (wird in application.properties zu jwt.secret)
       - JWT_SECRET=${JWT_SECRET}
       - JWT_EXPIRATION_MS=${JWT_EXPIRATION_MS}
       - JWT_REFRESH_EXPIRATION_MS=${JWT_REFRESH_EXPIRATION_MS}
@@ -85,7 +81,7 @@ services:
         SERVICE_DIR: catalog-service
     image: ops-catalog:latest
     env_file:
-      - ../.env
+      - .env
     environment:
       - SERVER_PORT=8082
       - SEED_FILE=classpath:seeds/toptuna_demo_products.csv
@@ -106,7 +102,7 @@ services:
         SERVICE_DIR: order-service
     image: ops-orders:latest
     env_file:
-      - ../.env
+      - .env
     environment:
       - SERVER_PORT=8083
     ports:
@@ -126,7 +122,7 @@ services:
         SERVICE_DIR: logistics-service
     image: ops-logistics:latest
     env_file:
-      - ../.env
+      - .env
     environment:
       - SERVER_PORT=8084
     ports:
@@ -146,7 +142,7 @@ services:
         SERVICE_DIR: crm-service
     image: ops-crm:latest
     env_file:
-      - ../.env
+      - .env
     environment:
       - SERVER_PORT=8085
     ports:
@@ -166,7 +162,7 @@ services:
         SERVICE_DIR: export-service
     image: ops-export:latest
     env_file:
-      - ../.env
+      - .env
     environment:
       - SERVER_PORT=8086
     ports:

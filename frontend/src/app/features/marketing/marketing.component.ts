@@ -13,35 +13,35 @@ import { Subscription } from 'rxjs';
   
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin:16px 0">
     <div class="stat-card">
-      <h4>Kunden gesamt</h4>
+      <h4>{{ 'marketing.stats.totalCustomers' | translate }}</h4>
       <span class="big-number">{{insights?.totalCustomers}}</span>
     </div>
     <div class="stat-card">
-      <h4>Vietnamesische Restaurants</h4>
+      <h4>{{ 'marketing.stats.vietnamese' | translate }}</h4>
       <span class="big-number">{{insights?.vietnameseCustomers}}</span>
     </div>
     <div class="stat-card">
-      <h4>Ø Bestellwert</h4>
+      <h4>{{ 'marketing.stats.avgOrderValue' | translate }}</h4>
       <span class="big-number">{{insights?.avgOrderValue}}€</span>
     </div>
     <div class="stat-card">
-      <h4>Monatswachstum</h4>
+      <h4>{{ 'marketing.stats.monthlyGrowth' | translate }}</h4>
       <span class="big-number growth">{{insights?.monthlyGrowth}}</span>
     </div>
   </div>
 
-  <h4>Regionale Verteilung</h4>
+  <h4>{{ 'marketing.regions.title' | translate }}</h4>
   <div *ngFor="let region of getRegions()" class="region-card">
     <strong>{{region.name}}</strong>
-    <span>{{region.customers}} Kunden</span>
+    <span>{{ 'marketing.regions.customers' | translate:{ count: region.customers } }}</span>
     <span class="growth">{{region.growth}}</span>
   </div>
 
-  <h4>{{ 'marketing.recommendations' | translate }}</h4>
+  <h4>{{ 'marketing.recommendations.title' | translate }}</h4>
   <div *ngFor="let rec of recommendations" class="recommendation">
     <strong>{{rec.productSku}}</strong>
     <p>{{rec.targetMessage}}</p>
-    <small>Confidence: {{rec.confidence * 100}}%</small>
+    <small>{{ 'marketing.recommendations.confidence' | translate:{ value: (rec.confidence * 100) | number:'1.0-0' } }}</small>
   </div>
   `,
   styles: [`

@@ -1,0 +1,73 @@
+<section class="cart-page">
+  <header class="cart-header">
+    <h1>{{ 'cart.title' | translate }}</h1>
+    <p>{{ 'cart.subtitle' | translate }}</p>
+    <div class="user-info" *ngIf="currentUser">
+      <span class="user-label">Warenkorb für:</span>
+      <span class="user-name">{{ currentUser.name }} ({{ currentUser.username }})</span>
+    </div>
+  </header>
+
+  <ng-container *ngIf="(items$ | async) as items; else emptyState">
+    <div class="cart-layout" *ngIf="items.length; else emptyState">
+      <div class="cart-items">
+        <article class="cart-item" *ngFor="let item of items; trackBy: trackBySku">
+          <div class="item-visual">
+            <div class="icon">🐟</div>
+          </div>
+          <div class="item-body">
+            <div class="item-header">
+              <h2>{{ productName(item) }}</h2>
+              <span class="sku">{{ item.sku }}</span>
+            </div>
+            <p class="meta">{{ item.product.origin }} · {{ item.unit }}</p>
+
+            <div class="item-actions">
+              <div class="quantity">
+                <button type="button" (click)="decrease(item)" aria-label="Decrease">−</button>
+                <span>{{ item.quantity }}</span>
+                <button type="button" (click)="increase(item)" aria-label="Increase">+</button>
+              </div>
+              <span class="price">{{ (item.price * item.quantity) | number:'1.2-2' }} €</span>
+            </div>
+          </div>
+
+          <button class="delete" type="button" (click)="remove(item)" aria-label="Remove">
+            ×
+          </button>
+        </article>
+      </div>
+
+      <aside class="cart-summary">
+        <div class="summary-card">
+          <h3>{{ 'cart.summary.title' | translate }}</h3>
+          <div class="row">
+            <span>{{ 'cart.summary.items' | translate:{ count: items.length } }}</span>
+            <span>{{ items.length }}</span>
+          </div>
+          <div class="row total">
+            <span>{{ 'cart.summary.total' | translate }}</span>
+            <span>{{ total$ | async | number:'1.2-2' }} €</span>
+          </div>
+
+          <button class="btn btn-primary" type="button">
+            {{ 'cart.summary.checkout' | translate }}
+          </button>
+          <button class="btn btn-secondary" type="button" (click)="clear()">
+            {{ 'cart.summary.clear' | translate }}
+          </button>
+        </div>
+        <a class="back-link" routerLink="/shop">← {{ 'cart.backToShop' | translate }}</a>
+      </aside>
+    </div>
+  </ng-container>
+</section>
+
+<ng-template #emptyState>
+  <div class="empty-state">
+    <div class="empty-icon">🛒</div>
+    <h3>{{ 'cart.emptyTitle' | translate }}</h3>
+    <p>{{ 'cart.emptyMessage' | translate }}</p>
+    <a class="btn btn-primary" routerLink="/shop">{{ 'cart.emptyAction' | translate }}</a>
+  </div>
+</ng-template>
